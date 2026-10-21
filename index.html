@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Gestão.Técnicos</title>
+<style>
+:root{
+  color-scheme: light;
+  --bg:#f4f3f0; --surface:#fcfcfb; --border:#e4e2dc; --grid:#ebe9e4;
+  --text:#0b0b0b; --text2:#52514e; --muted:#7c7b76;
+  --series:#2a78d6; --series-soft:#b7d3f6; --neutral:#c9c7c0;
+  --good:#0ca30c; --good-text:#006300; --critical:#d03b3b; --critical-text:#b02e2e; --warn:#fab219; --warn-text:#9a6400;
+  --chip:#ecebe7; --chip-on:#0b0b0b; --chip-on-text:#fff;
+  --shadow:0 1px 2px rgba(0,0,0,.05);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --bg:#121211; --surface:#1a1a19; --border:#2e2e2b; --grid:#2a2a27;
+    --text:#f0efec; --text2:#c3c2b7; --muted:#8f8e86;
+    --series:#3987e5; --series-soft:#1c3f6b; --neutral:#4a4a45;
+    --good-text:#3fc23f; --critical-text:#ef7a7a; --warn-text:#fab219;
+    --chip:#262624; --chip-on:#f0efec; --chip-on-text:#121211;
+    --shadow:none;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#121211; --surface:#1a1a19; --border:#2e2e2b; --grid:#2a2a27;
+  --text:#f0efec; --text2:#c3c2b7; --muted:#8f8e86;
+  --series:#3987e5; --series-soft:#1c3f6b; --neutral:#4a4a45;
+  --good-text:#3fc23f; --critical-text:#ef7a7a; --warn-text:#fab219;
+  --chip:#262624; --chip-on:#f0efec; --chip-on-text:#121211;
+  --shadow:none;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding-block:28px 48px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+h1{font-size:24px;margin:0 0 4px;letter-spacing:-.01em}
+.sub{color:var(--text2);margin:0}
+.src{color:var(--muted);font-size:12px;margin-top:4px}
+.theme-btn{border:1px solid var(--border);background:var(--surface);color:var(--text2);border-radius:8px;padding:6px 10px;font:inherit;font-size:12px;cursor:pointer}
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+.filters{flex-direction:column;align-items:flex-start}
+.seg{display:inline-flex;background:var(--chip);border-radius:10px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;color:var(--text2);font:inherit;font-size:14px;font-weight:600;padding:8px 18px;border-radius:8px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.seg button:focus-visible,.chip:focus-visible{outline:2px solid var(--series);outline-offset:2px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.lgroup{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;font-weight:650;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;padding:10px 0 4px;border-bottom:1px solid var(--border);margin-bottom:4px}
+.lgroup:first-child{padding-top:0}
+.lgroup span{font-variant-numeric:tabular-nums;text-transform:none;letter-spacing:0;font-weight:500}
+.tr{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:650;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tr.up{color:var(--good-text)} .tr.down{color:var(--critical-text)} .tr.eq{color:var(--warn-text)} .tr.new{color:var(--muted);font-weight:500}
+.tr .ic{font-size:10px;line-height:1}
+.tr.eq .ic{display:inline-block;width:12px;height:3px;border-radius:2px;background:var(--warn);align-self:center}
+.cmp{font-size:12px;color:var(--muted);margin:-8px 0 16px}
+.trlegend{display:flex;gap:14px;flex-wrap:wrap}
+footer{margin-top:28px;padding-top:14px;border-top:1px solid var(--border);color:var(--muted);font-size:12px;line-height:1.6}
+.pend{display:inline-block;font-size:10px;font-weight:600;color:var(--critical-text);margin-left:4px}
+.chip{border:0;background:var(--chip);color:var(--text);border-radius:999px;padding:7px 14px;font:inherit;font-size:13px;font-weight:500;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--chip-on);color:var(--chip-on-text)}
+.chip:disabled{opacity:.45;cursor:not-allowed}
+.search{margin-left:auto;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:8px;padding:7px 12px;font:inherit;font-size:13px;min-width:220px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;box-shadow:var(--shadow)}
+.kpi .lbl{color:var(--text2);font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+.kpi .val{font-size:32px;font-weight:650;letter-spacing:-.02em;margin-top:6px;font-variant-numeric:tabular-nums}
+.kpi .foot{font-size:12px;color:var(--muted);margin-top:2px}
+.status{display:inline-flex;align-items:center;gap:4px;font-weight:600}
+.status.ok{color:var(--good-text)} .status.bad{color:var(--critical-text)}
+.grid2{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:16px;margin-bottom:16px}
+.card h2{font-size:15px;margin:0 0 2px}
+.card .hint{color:var(--muted);font-size:12px;margin:0 0 14px}
+/* line chart */
+.lrow{display:grid;grid-template-columns:44px 1fr 92px 66px;align-items:center;gap:10px;padding:6px 0;cursor:pointer;border-radius:6px}
+.lrow:hover .ltrack{background:var(--grid)}
+.lrow.dim{opacity:.35}
+.lname{font-weight:600;font-size:13px}
+.ltrack{position:relative;height:22px;border-radius:4px;transition:background .15s}
+.lbar{position:absolute;left:0;top:3px;bottom:3px;background:var(--series);border-radius:0 4px 4px 0}
+.lmeta{position:absolute;top:-3px;bottom:-3px;width:0;border-left:2px dashed var(--text2)}
+.lval{font-size:12px;color:var(--text2);text-align:right;font-variant-numeric:tabular-nums}
+.lval b{color:var(--text);font-size:13px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--text2);margin-top:10px}
+.legend i{display:inline-block;vertical-align:middle;margin-right:6px}
+.sw{width:12px;height:12px;border-radius:3px}
+.dash{width:16px;height:0;border-top:2px dashed var(--text2)}
+/* distribution */
+.dist{display:flex;align-items:flex-end;gap:2px;height:150px;padding-top:8px;position:relative}
+.dcol{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;cursor:default;position:relative}
+.dbar{width:100%;border-radius:4px 4px 0 0;background:var(--neutral)}
+.dbar.hi{background:var(--series)}
+.dcol:hover .dbar{filter:brightness(1.12)}
+.daxis{display:flex;gap:2px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);padding-top:4px}
+.daxis span{flex:1;text-align:center}
+/* ranking */
+.rank-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.rank{margin-top:8px}
+.rrow{display:grid;grid-template-columns:minmax(150px,260px) 54px 1fr 36px 44px;align-items:center;gap:10px;padding:4px 6px;border-radius:6px;cursor:default}
+.rrow:hover{background:var(--grid)}
+.rname{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px}
+.rname small{color:var(--muted);margin-left:6px;font-size:11px}
+.rline{font-size:11px;color:var(--text2);font-weight:600;background:var(--chip);border-radius:4px;padding:2px 6px;text-align:center}
+.rtrack{position:relative;height:16px}
+.rbar{position:absolute;left:0;top:2px;bottom:2px;border-radius:0 4px 4px 0;background:var(--neutral)}
+.rbar.hi{background:var(--series)}
+.rref{position:absolute;top:-4px;bottom:-4px;border-left:2px dashed var(--text2);opacity:.7}
+.rval{text-align:right;font-variant-numeric:tabular-nums;font-weight:600;font-size:13px}
+.zero .rval{color:var(--muted);font-weight:400}
+.empty{color:var(--muted);padding:16px 0}
+/* tooltip */
+.tip{position:fixed;pointer-events:none;z-index:10;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:12px;box-shadow:0 6px 24px rgba(0,0,0,.18);min-width:190px;opacity:0;transition:opacity .08s}
+.tip.on{opacity:1}
+.tip .t{font-weight:650;font-size:13px;margin-bottom:2px}
+.tip .s{color:var(--muted);margin-bottom:6px}
+.tip table{border-collapse:collapse;width:100%}
+.tip td{padding:1px 0}
+.tip td:last-child{text-align:right;font-variant-numeric:tabular-nums;padding-left:14px}
+.tip .tot td{border-top:1px solid var(--border);font-weight:650;padding-top:4px}
+/* table */
+details.card summary{cursor:pointer;font-weight:600;font-size:15px}
+.tbl-wrap{overflow-x:auto;margin-top:12px}
+table.data{width:100%;border-collapse:collapse;font-size:13px}
+table.data th{text-align:left;color:var(--text2);font-weight:600;font-size:12px;border-bottom:1px solid var(--border);padding:8px;white-space:nowrap;cursor:pointer;user-select:none}
+table.data td{border-bottom:1px solid var(--grid);padding:7px 8px;vertical-align:top}
+table.data td.num{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+table.data td.det{color:var(--text2);font-size:12px}
+.note{margin-top:16px;font-size:12px;color:var(--text2);line-height:1.6}
+.note b{color:var(--text)}
+@media (max-width:880px){
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .grid2{grid-template-columns:1fr}
+  .search{margin-left:0;width:100%}
+}
+.more{display:block;width:100%;margin-top:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:8px;padding:10px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.more:focus-visible{outline:2px solid var(--series);outline-offset:2px}
+@media (hover:none){ .rrow,.lrow,.dcol{-webkit-tap-highlight-color:transparent} }
+@media (max-width:520px){
+  .rname small{display:none}
+  .chips{flex-wrap:nowrap;overflow-x:auto;width:100%;padding-bottom:4px;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:none}
+  .seg{width:100%} .seg button{flex:1;padding:8px 6px}
+  .lrow{grid-template-columns:40px 1fr 84px 56px;gap:8px}
+  .tip{left:12px!important;right:12px;min-width:0}
+  .rrow{grid-template-columns:minmax(0,1fr) 46px 32px 40px}
+  .rtrack{display:none}
+  .kpi .val{font-size:26px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Ordens abertas por técnico</h1>
+      <p class="sub">Indicador % Técnicos ≥ 10 ordens · Outubro/2026 · F. Rio de Janeiro (NR) · Packaging · Retornáveis e One Way</p>
+    </div>
+    <button class="theme-btn" id="themeBtn" type="button">Alternar tema</button>
+  </header>
+
+  <div class="filters">
+    <div class="seg" id="groups" role="toolbar" aria-label="Grupo de linhas"></div>
+    <div class="chips" id="filters" role="toolbar" aria-label="Filtro de linha"></div>
+  </div>
+
+  <p class="cmp" id="cmp"></p>
+  <section class="kpis" id="kpis"></section>
+
+  <section class="grid2">
+    <div class="card">
+      <h2>% de técnicos com ≥ 10 ordens por linha</h2>
+      <p class="hint">Toque numa linha para filtrar o painel. Meta ≥ 70%.</p>
+      <div id="lines"></div>
+      <div class="legend"><span><i class="sw" style="background:var(--series)"></i>% técnicos ≥ 10 ordens</span><span><i class="dash"></i>Meta 70%</span></div>
+    </div>
+    <div class="card">
+      <h2>Distribuição de técnicos por quantidade de ordens</h2>
+      <p class="hint" id="distHint"></p>
+      <div class="dist" id="dist"></div>
+      <div class="daxis" id="daxis"></div>
+      <div class="legend"><span><i class="sw" style="background:var(--series)"></i>≥ 10 ordens (conta no indicador)</span><span><i class="sw" style="background:var(--neutral)"></i>&lt; 10 ordens</span></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="rank-head">
+      <div>
+        <h2>Ranking de ordens abertas por técnico</h2>
+        <p class="hint" style="margin:0">Linha do técnico conforme o QLP. Toque ou passe o mouse para ver onde as ordens foram abertas.</p>
+      </div>
+      <input class="search" id="search" type="search" placeholder="Buscar técnico ou ID…" aria-label="Buscar técnico">
+    </div>
+    <div class="rank" id="rank"></div>
+    <div class="legend"><span><i class="sw" style="background:var(--series)"></i>≥ 10 ordens</span><span><i class="sw" style="background:var(--neutral)"></i>&lt; 10 ordens</span><span><i class="dash"></i>Corte de 10 ordens</span><span class="trlegend"><span class="tr up"><span class="ic">▲</span>subiu</span><span class="tr down"><span class="ic">▼</span>caiu</span><span class="tr eq"><span class="ic"></span>manteve</span></span></div>
+  </section>
+
+  <details class="card" style="margin-top:16px">
+    <summary>Tabela completa (<span id="tblCount"></span> técnicos)</summary>
+    <div class="tbl-wrap">
+      <table class="data">
+        <thead><tr>
+          <th data-k="nome">Técnico</th><th data-k="id">ID</th><th data-k="linha">Linha</th><th data-k="gestor">Gestor</th><th data-k="total" style="text-align:right">Ordens</th><th>Var.</th><th>≥ 10</th><th>Onde abriu as ordens</th>
+        </tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </details>
+
+  <p class="note">
+    <b>Regra do indicador:</b> entram os técnicos (SHAPE = TEC) do QLP de cada linha. Cada técnico conta todas as ordens que abriu no mês como Usuário_Abertura, em qualquer subárea ou área. Ele atinge o indicador com <b>≥ 10 ordens</b>.
+    <b>L502</b> não tem técnicos no QLP nem ordens em outubro, por isso aparece zerada.
+    <b>Retornáveis</b> (L501, L502, L503, L505, L506, L521, L542) · <b>One Way</b> (L511, L512, L514, L541, L561, L562).<br>
+    <b>Números oficiais:</b> os KPIs e os percentuais por linha usam os valores do indicador no Power BI (64 de 206 técnicos, 31,1%).
+    <b>Evolução:</b> ▲ verde = subiu, ▼ vermelho = caiu, traço amarelo = manteve, sempre em relação à leitura anterior. Para técnico, compara a quantidade de ordens; para linhas e grupos, o % de técnicos com ≥ 10 ordens (em pontos percentuais).
+    <b>† Diferença no ranking:</b> nas linhas L505, L511, L512, L541 e L562 o BI conta 1 técnico a mais com ≥ 10 ordens do que aparece na tabela de Detalhes. Nessas linhas há técnicos com 8 ou 9 ordens no ranking; o BI provavelmente considera ordens que não aparecem na tabela de Detalhes (por exemplo, ordens já encerradas).
+  </p>
+  <footer>Fonte: Power BI Confiabilidade SAZ → Saúde do Planejamento → Detalhes (dados atualizados em 21/10/26) · nomes cruzados com a base de colaboradores (Outubro/2026).</footer>
+</div>
+<div class="tip" id="tip" role="tooltip"></div>
+
+<script>
+const DATA = [{"id": "99013935", "nome": "Cesar Daniel Da Silva", "linha": "L506", "grupo": "Retornáveis", "gestor": "Davi De Souza Dias", "total": 32, "det": {"L505": 14, "L501": 9, "L506": 5, "L503": 2, "L542": 2}}, {"id": "99721540", "nome": "Nilson Pacheco Gomes", "linha": "L521", "grupo": "Retornáveis", "gestor": "Thais Wilhelm Caldas", "total": 30, "det": {"L521": 30}}, {"id": "99840800", "nome": "Pedro Henrique Mota De Souza", "linha": "L541", "grupo": "One Way", "gestor": "Francisco Anderson Moraes Gomes", "total": 26, "det": {"Não Informado": 26}}, {"id": "99752347", "nome": "Carlos Trece Costa", "linha": "L506", "grupo": "Retornáveis", "gestor": "Rodrigo De Oliveira Silva", "total": 22, "det": {"L506": 22}}, {"id": "99799274", "nome": "Marlon Fabiano Silva Lisboa", "linha": "L506", "grupo": "Retornáveis", "gestor": "Luiz Ricardo Medeiros", "total": 22, "det": {"L506": 15, "CIP": 6, "L505": 1}}, {"id": "99720843", "nome": "Fabiano Rosa Da Mata", "linha": "L541", "grupo": "One Way", "gestor": "", "total": 20, "det": {"L541": 20}}, {"id": "99818034", "nome": "Brendo Da Silva Ferreira Dos Santos", "linha": "L506", "grupo": "Retornáveis", "gestor": "Lisandro Da Silva Rocha", "total": 20, "det": {"L506": 12, "L505": 6, "L542": 2}}, {"id": "99004901", "nome": "Marcelo Faria De Alarcao", "linha": "L501", "grupo": "Retornáveis", "gestor": "Edson De Barros Pereira", "total": 19, "det": {"L501": 19}}, {"id": "99713626", "nome": "Marcelo Camargo Gomes", "linha": "L505", "grupo": "Retornáveis", "gestor": "Renan Cardoso Da Silva", "total": 19, "det": {"Meio Ambiente · Etei": 13, "Meio Ambiente · Secador De Fermento": 3, "Meio Ambiente · Eta": 2, "Administrativo · Bloco Social": 1}}, {"id": "99758528", "nome": "Ronald Teodoro", "linha": "L501", "grupo": "Retornáveis", "gestor": "Renan De Oliveira Dos Santos", "total": 19, "det": {"L501": 15, "L505": 4}}, {"id": "99772571", "nome": "Fabricio De Souza Ventura", "linha": "L542", "grupo": "Retornáveis", "gestor": "Anderson Miranda Dos Santos", "total": 19, "det": {"L542": 19}}, {"id": "99750708", "nome": "Anildo Dos Santos", "linha": "L501", "grupo": "Retornáveis", "gestor": "Renan De Oliveira Dos Santos", "total": 18, "det": {"L501": 18}}, {"id": "99002966", "nome": "Anderson Ferreira Gomes", "linha": "L561", "grupo": "One Way", "gestor": "Leandro Leite Ferraz", "total": 17, "det": {"L562": 9, "L561": 8}}, {"id": "99771238", "nome": "Robson Pessoa Da Silva", "linha": "L541", "grupo": "One Way", "gestor": "Guilherme Sabino Da Silva Vieira", "total": 17, "det": {"L541": 17}}, {"id": "99722318", "nome": "Carlos Jose Do Nascimento", "linha": "L501", "grupo": "Retornáveis", "gestor": "Renan De Oliveira Dos Santos", "total": 16, "det": {"L501": 16}}, {"id": "99744041", "nome": "Wellyngton Almeida De Souza", "linha": "L503", "grupo": "Retornáveis", "gestor": "Lisandro Da Silva Rocha", "total": 16, "det": {"L503": 14, "L506": 2}}, {"id": "99744344", "nome": "Arnaldo Bispo Adao", "linha": "L505", "grupo": "Retornáveis", "gestor": "Alessandro Araujo De Lima", "total": 16, "det": {"L505": 16}}, {"id": "99759827", "nome": "Andre Felix Fernandes", "linha": "L541", "grupo": "One Way", "gestor": "Anderson Carvalho Marins", "total": 16, "det": {"Não Informado": 16}}, {"id": "99002943", "nome": "Luis Antonio Dias Spilare", "linha": "L514", "grupo": "One Way", "gestor": "Mariana De Souza Pinto", "total": 15, "det": {"L514": 15}}, {"id": "99746957", "nome": "Francisco Egnaldo De Araujo Rodrigues Ferreira", "linha": "L506", "grupo": "Retornáveis", "gestor": "Lisandro Da Silva Rocha", "total": 15, "det": {"L506": 12, "L505": 3}}, {"id": "99751172", "nome": "Bruno Silva De Oliveira", "linha": "L541", "grupo": "One Way", "gestor": "Carlos Felipe Duarte Coelho", "total": 15, "det": {"L541": 15}}, {"id": "99016330", "nome": "Aldair Antunes De Sa", "linha": "L512", "grupo": "One Way", "gestor": "Renato Mangia Da Silva", "total": 14, "det": {"L512": 14}}, {"id": "99722300", "nome": "Andre Possidonio Dias Machado", "linha": "L506", "grupo": "Retornáveis", "gestor": "Gabriella Araujo Reboucas Oliveira", "total": 14, "det": {"L506": 14}}, {"id": "99728799", "nome": "Leonardo De Souza", "linha": "L503", "grupo": "Retornáveis", "gestor": "Lisandro Da Silva Rocha", "total": 14, "det": {"L503": 11, "L506": 3}}, {"id": "99744163", "nome": "Leonardo Moura De Oliveira", "linha": "L541", "grupo": "One Way", "gestor": "", "total": 14, "det": {"L541": 14}}, {"id": "99752397", "nome": "Marcos Roberto Rufino", "linha": "L541", "grupo": "One Way", "gestor": "Caique Bortoluci Bastos", "total": 14, "det": {"Não Informado": 13, "L503": 1}}, {"id": "99777407", "nome": "Alex Sandro Rosa Ferreira", "linha": "L505", "grupo": "Retornáveis", "gestor": "Alessandro Araujo De Lima", "total": 14, "det": {"L505": 14}}, {"id": "99701166", "nome": "Everson Furtado Da Conceicao", "linha": "L514", "grupo": "One Way", "gestor": "Mariana De Souza Pinto", "total": 13, "det": {"L514": 13}}, {"id": "99749878", "nome": "Guilherme De Oliveira Serafim", "linha": "L501", "grupo": "Retornáveis", "gestor": "Edson De Barros Pereira", "total": 13, "det": {"L501": 13}}, {"id": "99802176", "nome": "Higor Pereira Gusmao", "linha": "L512", "grupo": "One Way", "gestor": "Renato Mangia Da Silva", "total": 13, "det": {"L512": 12, "L511": 1}}, {"id": "99802178", "nome": "Bruno De Sousa Sampaio", "linha": "L505", "grupo": "Retornáveis", "gestor": "Adriano Franciscao De Ananias", "total": 13, "det": {"L505": 13}}, {"id": "99003242", "nome": "Ronaldo Vianna Da Silveira", "linha": "L561", "grupo": "One Way", "gestor": "Renan Dos Santos Cavalleiro", "total": 12, "det": {"L561": 11, "L562": 1}}, {"id": "99716683", "nome": "Daniel Antonio Da Silva Silveira", "linha": "L561", "grupo": "One Way", "gestor": "Marcelo Lazari Alves", "total": 12, "det": {"L561": 11, "L562": 1}}, {"id": "99748136", "nome": "Leandro Ferreira Estevam Luz", "linha": "L521", "grupo": "Retornáveis", "gestor": "Thais Wilhelm Caldas", "total": 12, "det": {"L521": 10, "CIP": 1, "L501": 1}}, {"id": "99748314", "nome": "Fabio Ferreira", "linha": "L541", "grupo": "One Way", "gestor": "Francisco Anderson Moraes Gomes", "total": 12, "det": {"Não Informado": 11, "Outros": 1}}, {"id": "99721121", "nome": "Luiz Henrique Da Conceicao Correa", "linha": "L501", "grupo": "Retornáveis", "gestor": "Renan De Oliveira Dos Santos", "total": 11, "det": {"L501": 7, "L505": 4}}, {"id": "99721301", "nome": "Carlos Cesar Levati", "linha": "L501", "grupo": "Retornáveis", "gestor": "Luis Claudio Batista De Carvalho", "total": 11, "det": {"L501": 11}}, {"id": "99721314", "nome": "Emerson Roza Silva", "linha": "L503", "grupo": "Retornáveis", "gestor": "Lisandro Da Silva Rocha", "total": 11, "det": {"L503": 11}}, {"id": "99726753", "nome": "Jose Roberto De Oliveira Bento", "linha": "L506", "grupo": "Retornáveis", "gestor": "Rodrigo De Oliveira Silva", "total": 11, "det": {"L503": 6, "L506": 5}}, {"id": "99729169", "nome": "Carlos Rodrigo De Oliveira", "linha": "L542", "grupo": "Retornáveis", "gestor": "Anderson Miranda Dos Santos", "total": 11, "det": {"L542": 10, "Administrativo · Adm": 1}}, {"id": "99755033", "nome": "Temilton Reis Dos Santos", "linha": "L514", "grupo": "One Way", "gestor": "Carol Cristine Da Silva", "total": 11, "det": {"L514": 11}}, {"id": "99763067", "nome": "Luciano Da Silva Delfino", "linha": "L562", "grupo": "One Way", "gestor": "Renan Dos Santos Cavalleiro", "total": 11, "det": {"L562": 9, "L561": 2}}, {"id": "99765307", "nome": "Albens Lima Dos Santos", "linha": "L541", "grupo": "One Way", "gestor": "Caique Bortoluci Bastos", "total": 11, "det": {"Não Informado": 11}}, {"id": "99827152", "nome": "Gisely Martins Bastos Da Silva", "linha": "L541", "grupo": "One Way", "gestor": "Caique Bortoluci Bastos", "total": 11, "det": {"Não Informado": 11}}, {"id": "99834681", "nome": "Luciano Dias Santana Fonseca", "linha": "L562", "grupo": "One Way", "gestor": "Leandro Leite Ferraz", "total": 11, "det": {"L561": 6, "L562": 5}}, {"id": "99834685", "nome": "Thiago De Oliveira Gamba", "linha": "L514", "grupo": "One Way", "gestor": "Paulo Francisco Nascimento", "total": 11, "det": {"L514": 11}}, {"id": "99715656", "nome": "Alessandro Martiniano De Rezende Trindade", "linha": "L505", "grupo": "Retornáveis", "gestor": "Adriano Franciscao De Ananias", "total": 10, "det": {"L505": 9, "L542": 1}}, {"id": "99722434", "nome": "Demilson Jesus Da Silva", "linha": "L503", "grupo": "Retornáveis", "gestor": "Davi De Souza Dias", "total": 10, "det": {"L505": 4, "L503": 2, "L506": 2, "L542": 2}}, {"id": "99726225", "nome": "Allan De Oliveira Da Cruz", "linha": "L514", "grupo": "One Way", "gestor": "Mariana De Souza Pinto", "total": 10, "det": {"L514": 10}}, {"id": "99736594", "nome": "Anderson Motta Menezes", "linha": "L512", "grupo": "One Way", "gestor": "Renato Mangia Da Silva", "total": 10, "det": {"L512": 10}}, {"id": "99743724", "nome": "Vanderlei Carvalho Da Silva", "linha": "L501", "grupo": "Retornáveis", "gestor": "Pamella Cristina Gonzaga Nascimento Nazareth", "total": 10, "det": {"L501": 10}}, {"id": "99752300", "nome": "Willian Do Nascimento De Almeida", "linha": "L503", "grupo": "Retornáveis", "gestor": "Lisandro Da Silva Rocha", "total": 10, "det": {"L505": 9, "L503": 1}}, {"id": "99771121", "nome": "Robson Dolavale De Souza", "linha": "L541", "grupo": "One Way", "gestor": "Francisco Anderson Moraes Gomes", "total": 10, "det": {"Não Informado": 10}}, {"id": "99772016", "nome": "Rafael Vitalino De Abreu", "linha": "L542", "grupo": "Retornáveis", "gestor": "Alessandro Araujo De Lima", "total": 10, "det": {"L542": 10}}, {"id": "99796764", "nome": "Thiago Da Silva Bernardo", "linha": "L541", "grupo": "One Way", "gestor": "Anderson Carvalho Marins", "total": 10, "det": {"Não Informado": 9, "L501": 1}}, {"id": "99810897", "nome": "Joao Vitor De Souza Silva Guimaraes", "linha": "L511", "grupo": "One Way", "gestor": "Susan Melo Da Rocha", "total": 10, "det": {"L511": 10}}, {"id": "99833826", "nome": "Luis Gustavo Correa Alves", "linha": "L501", "grupo": "Retornáveis", "gestor": "Renan De Oliveira Dos Santos", "total": 10, "det": {"L501": 10}}, {"id": "99834675", "nome": "Fernando Henrique Vicente", "linha": "L562", "grupo": "One Way", "gestor": "Marcelo Lazari Alves", "total": 10, "det": {"L562": 7, "L561": 3}}, {"id": "99834797", "nome": "Bruno Julio Barbosa Da Silva", "linha": "L562", "grupo": "One Way", "gestor": "Renan Dos Santos Cavalleiro", "total": 10, "det": {"L561": 5, "L562": 5}}, {"id": "99072664", "nome": "Mauro Avelino Da Silva", "linha": "L512", "grupo": "One Way", "gestor": "Jonathan Da Silva Santana", "total": 9, "det": {"L512": 9}}, {"id": "99718422", "nome": "Fabiano Vieira De Ananias", "linha": "L562", "grupo": "One Way", "gestor": "Renan Dos Santos Cavalleiro", "total": 9, "det": {"L562": 9}}, {"id": "99727957", "nome": "Alan Fonseca De Souza", "linha": "L506", "grupo": "Retornáveis", "gestor": "Rodrigo De Oliveira Silva", "total": 9, "det": {"L506": 9}}, {"id": "99732002", "nome": "Erick Da Cunha Vieira", "linha": "L541", "grupo": "One Way", "gestor": "Luis Claudio Batista De Carvalho", "total": 9, "det": {"Não Informado": 9}}, {"id": "99737720", "nome": "Leonardo Luis Dos Santos Da Conceicao", "linha": "L514", "grupo": "One Way", "gestor": "Carol Cristine Da Silva", "total": 9, "det": {"L514": 9}}, {"id": "99737793", "nome": "Paulo Vinicius Alves Cardoso", "linha": "L514", "grupo": "One Way", "gestor": "Paulo Francisco Nascimento", "total": 9, "det": {"L514": 9}}, {"id": "99759773", "nome": "Ronaldo Rodrigues De Souza Cruz", "linha": "L511", "grupo": "One Way", "gestor": "Renato Mangia Da Silva", "total": 9, "det": {"L511": 9}}, {"id": "99760641", "nome": "George Alves Da Cunha", "linha": "L541", "grupo": "One Way", "gestor": "Francisco Anderson Moraes Gomes", "total": 9, "det": {"Não Informado": 9}}, {"id": "99820007", "nome": "Gabriel De Lima Sampaio", "linha": "L541", "grupo": "One Way", "gestor": "Francisco Anderson Moraes Gomes", "total": 9, "det": {"Não Informado": 9}}, {"id": "99834897", "nome": "Roberto Ferreira Da Silva", "linha": "L514", "grupo": "One Way", "gestor": "Mariana De Souza Pinto", "total": 9, "det": {"L514": 9}}, {"id": "99836581", "nome": "Anne Pereira Rangel De Assis", "linha": "L541", "grupo": "One Way", "gestor": "Carlos Felipe Duarte Coelho", "total": 9, "det": {"L541": 9}}, {"id": "99845890", "nome": "Maikon Phelipe Barcellos Da Silva", "linha": "L512", "grupo": "One Way", "gestor": "Jonathan Da Silva Santana", "total": 9, "det": {"L512": 9}}, {"id": "99019917", "nome": "Islan Prazeres Ornela", "linha": "L506", "grupo": "Retornáveis", "gestor": "Luiz Ricardo Medeiros", "total": 8, "det": {"L503": 5, "L506": 3}}, {"id": "99100450", "nome": "Sergio Silva Belarmindo", "linha": "L512", "grupo": "One Way", "gestor": "Renato Mangia Da Silva", "total": 8, "det": {"L512": 8}}, {"id": "99727995", "nome": "Emerson Haidamos Moraes", "linha": "L501", "grupo": "Retornáveis", "gestor": "Luis Claudio Batista De Carvalho", "total": 8, "det": {"L501": 8}}, {"id": "99743450", "nome": "Jose Maria Da Fonseca Junior", "linha": "L506", "grupo": "Retornáveis", "gestor": "Lisandro Da Silva Rocha", "total": 8, "det": {"L506": 8}}, {"id": "99744112", "nome": "Guilherme Da Silva Nascimento", "linha": "L505", "grupo": "Retornáveis", "gestor": "Adriano Franciscao De Ananias", "total": 8, "det": {"L505": 7, "L506": 1}}, {"id": "99747527", "nome": "Adriano Pessanha Gomes", "linha": "L541", "grupo": "One Way", "gestor": "", "total": 8, "det": {"L541": 8}}, {"id": "99764141", "nome": "Raphael Mota Gomes", "linha": "L506", "grupo": "Retornáveis", "gestor": "Luiz Ricardo Medeiros", "total": 8, "det": {"L506": 8}}, {"id": "99804200", "nome": "Jose Manuel Da Conceicao Dos Santos Junior", "linha": "L512", "grupo": "One Way", "gestor": "Jonathan Da Silva Santana", "total": 8, "det": {"L512": 8}}, {"id": "99817917", "nome": "Matheus Alves Ribeiro", "linha": "L541", "grupo": "One Way", "gestor": "Caique Bortoluci Bastos", "total": 8, "det": {"Não Informado": 8}}, {"id": "99818035", "nome": "Beatriz Lavinas Alves", "linha": "L541", "grupo": "One Way", "gestor": "Davi De Souza Dias", "total": 8, "det": {"L514": 4, "L511": 3, "L512": 1}}, {"id": "99827681", "nome": "Mariana Costa De Souza", "linha": "L512", "grupo": "One Way", "gestor": "Ian Olivier Kusakawa Shiba", "total": 8, "det": {"L512": 8}}, {"id": "99844722", "nome": "Renato Trigueiro Dos Reis", "linha": "L512", "grupo": "One Way", "gestor": "Ian Olivier Kusakawa Shiba", "total": 8, "det": {"L512": 8}}, {"id": "99003071", "nome": "Rafael Jose Cabral", "linha": "L514", "grupo": "One Way", "gestor": "Mariana De Souza Pinto", "total": 7, "det": {"L514": 7}}, {"id": "99003440", "nome": "Claiber Silva Baldez", "linha": "L561", "grupo": "One Way", "gestor": "Renan Dos Santos Cavalleiro", "total": 7, "det": {"L562": 6, "L561": 1}}, {"id": "99024856", "nome": "Ary Francisco Dos Santos Junior", "linha": "L506", "grupo": "Retornáveis", "gestor": "Lisandro Da Silva Rocha", "total": 7, "det": {"L506": 7}}, {"id": "99713593", "nome": "Wilson De Oliveira Barradas", "linha": "L542", "grupo": "Retornáveis", "gestor": "Rodrigo De Brito Silva", "total": 7, "det": {"L501": 4, "L505": 3}}, {"id": "99744149", "nome": "Adriano Coutinho De Souza", "linha": "L542", "grupo": "Retornáveis", "gestor": "Alessandro Araujo De Lima", "total": 7, "det": {"L542": 7}}, {"id": "99744230", "nome": "Thiago Ciodaro Abcassis", "linha": "L511", "grupo": "One Way", "gestor": "Renato Mangia Da Silva", "total": 7, "det": {"L511": 7}}, {"id": "99745035", "nome": "Gabriel Santos De Goes", "linha": "L521", "grupo": "Retornáveis", "gestor": "Thais Wilhelm Caldas", "total": 7, "det": {"L521": 6, "CIP": 1}}, {"id": "99745807", "nome": "Everton Cardoso Mauricio", "linha": "L506", "grupo": "Retornáveis", "gestor": "Lisandro Da Silva Rocha", "total": 7, "det": {"L506": 6, "L542": 1}}, {"id": "99749224", "nome": "Rodrigo Da Cruz Souza", "linha": "L562", "grupo": "One Way", "gestor": "Higor Sampaio Rodrigues", "total": 7, "det": {"L562": 5, "L561": 2}}, {"id": "99761265", "nome": "Leo Jaime Costa De Oliveira", "linha": "L506", "grupo": "Retornáveis", "gestor": "Gabriella Araujo Reboucas Oliveira", "total": 7, "det": {"L506": 6, "L503": 1}}, {"id": "99777429", "nome": "Thiago Pereira", "linha": "L514", "grupo": "One Way", "gestor": "Mariana De Souza Pinto", "total": 7, "det": {"L514": 6, "L541": 1}}, {"id": "99842526", "nome": "Lorena De Albernaz Crispim", "linha": "L511", "grupo": "One Way", "gestor": "Renato Mangia Da Silva", "total": 7, "det": {"L511": 7}}, {"id": "99844731", "nome": "Vitor Bruno Gazetta Rodrigues", "linha": "L541", "grupo": "One Way", "gestor": "Carlos Felipe Duarte Coelho", "total": 7, "det": {"L541": 7}}, {"id": "99715867", "nome": "Gilberto Zonias", "linha": "L542", "grupo": "Retornáveis", "gestor": "Laercio Da Silva", "total": 6, "det": {"L542": 6}}, {"id": "99728026", "nome": "Anderson De Abreu Mendonca", "linha": "L501", "grupo": "Retornáveis", "gestor": "Pamella Cristina Gonzaga Nascimento Nazareth", "total": 6, "det": {"L501": 6}}, {"id": "99751052", "nome": "Benicio Correa Junior", "linha": "L505", "grupo": "Retornáveis", "gestor": "Ravardier Vargas Antunes Junior", "total": 6, "det": {"L505": 5, "L506": 1}}, {"id": "99804206", "nome": "Jair Jose Da Silva Junior", "linha": "L514", "grupo": "One Way", "gestor": "Jessica Gomes Da Silva", "total": 6, "det": {"L514": 6}}, {"id": "99805658", "nome": "Lazaro De Mello Magioli", "linha": "L514", "grupo": "One Way", "gestor": "Jessica Gomes Da Silva", "total": 6, "det": {"L514": 6}}, {"id": "99824655", "nome": "Douglas Oliver De Souza", "linha": "L542", "grupo": "Retornáveis", "gestor": "Anderson Miranda Dos Santos", "total": 6, "det": {"L542": 5, "L505": 1}}, {"id": "99834898", "nome": "Leonardo Pereira Benedito", "linha": "L541", "grupo": "One Way", "gestor": "", "total": 6, "det": {"L541": 6}}, {"id": "99835136", "nome": "Marcelo Gomes Pinto", "linha": "L512", "grupo": "One Way", "gestor": "Rodrigo De Brito Silva", "total": 6, "det": {"L512": 6}}, {"id": "99841619", "nome": "Leandro Dos Santos Goncalves", "linha": "L541", "grupo": "One Way", "gestor": "Francisco Anderson Moraes Gomes", "total": 6, "det": {"Não Informado": 6}}, {"id": "99017590", "nome": "Adriano Santos Pires", "linha": "L512", "grupo": "One Way", "gestor": "Gustavo Rodrigues Da Costa", "total": 5, "det": {"L512": 5}}, {"id": "99019615", "nome": "Rui Batista Da Silva", "linha": "L505", "grupo": "Retornáveis", "gestor": "Joao Rafael Moura Sarte", "total": 5, "det": {"L505": 5}}, {"id": "99721864", "nome": "Bruno Goncalves Da Silva", "linha": "L511", "grupo": "One Way", "gestor": "Gustavo Rodrigues Da Costa", "total": 5, "det": {"L511": 5}}, {"id": "99722235", "nome": "Wallace Lopes Ensa", "linha": "L506", "grupo": "Retornáveis", "gestor": "Lisandro Da Silva Rocha", "total": 5, "det": {"L506": 5}}, {"id": "99723554", "nome": "Antonio Ferreira Do Nascimento Neto", "linha": "L542", "grupo": "Retornáveis", "gestor": "Alessandro Araujo De Lima", "total": 5, "det": {"L542": 5}}, {"id": "99748366", "nome": "Anderson Nascimento Da Silva", "linha": "L561", "grupo": "One Way", "gestor": "Higor Sampaio Rodrigues", "total": 5, "det": {"L562": 4, "L561": 1}}, {"id": "99778010", "nome": "Antonio Carlos Batista De Carvalho", "linha": "L511", "grupo": "One Way", "gestor": "Susan Melo Da Rocha", "total": 5, "det": {"L511": 5}}, {"id": "99811182", "nome": "Aberval Gomes De Oliveira", "linha": "L511", "grupo": "One Way", "gestor": "Davi De Souza Dias", "total": 5, "det": {"L514": 4, "L541": 1}}, {"id": "99823726", "nome": "Valdinei Candido Vieira", "linha": "L505", "grupo": "Retornáveis", "gestor": "Ravardier Vargas Antunes Junior", "total": 5, "det": {"L505": 5}}, {"id": "99828320", "nome": "Douglas Mendonca Gomes", "linha": "L503", "grupo": "Retornáveis", "gestor": "Lisandro Da Silva Rocha", "total": 5, "det": {"L503": 5}}, {"id": "99835312", "nome": "Ingrid Arielli Da Silva Leite", "linha": "L505", "grupo": "Retornáveis", "gestor": "Adriano Franciscao De Ananias", "total": 5, "det": {"L505": 5}}, {"id": "99002739", "nome": "Jorge De Souza Pereira", "linha": "L562", "grupo": "One Way", "gestor": "Renan Dos Santos Cavalleiro", "total": 4, "det": {"L561": 4}}, {"id": "99002994", "nome": "Marcos Antonio Pereira", "linha": "L562", "grupo": "One Way", "gestor": "Renan Dos Santos Cavalleiro", "total": 4, "det": {"L561": 4}}, {"id": "99719490", "nome": "Carlos Eduardo Florencio De Jesus", "linha": "L505", "grupo": "Retornáveis", "gestor": "Joao Rafael Moura Sarte", "total": 4, "det": {"L505": 4}}, {"id": "99724999", "nome": "Leonardo Macedo Piovesan", "linha": "L511", "grupo": "One Way", "gestor": "Susan Melo Da Rocha", "total": 4, "det": {"L511": 4}}, {"id": "99747534", "nome": "Charles Souza De Oliveira", "linha": "L505", "grupo": "Retornáveis", "gestor": "Alessandro Araujo De Lima", "total": 4, "det": {"L506": 4}}, {"id": "99758566", "nome": "Bruno Machado Correa", "linha": "L505", "grupo": "Retornáveis", "gestor": "Adriano Franciscao De Ananias", "total": 4, "det": {"L505": 4}}, {"id": "99764889", "nome": "Julliane Bezerra Dos Santos", "linha": "L542", "grupo": "Retornáveis", "gestor": "Rodrigo De Brito Silva", "total": 4, "det": {"L542": 4}}, {"id": "99772031", "nome": "Mario Henrique Alves", "linha": "L541", "grupo": "One Way", "gestor": "", "total": 4, "det": {"L541": 4}}, {"id": "99796381", "nome": "Leandro Dos Santos Cravinho", "linha": "L542", "grupo": "Retornáveis", "gestor": "Laercio Da Silva", "total": 4, "det": {"L542": 4}}, {"id": "99824308", "nome": "Augusto Cesar Santana De Oliveira", "linha": "L506", "grupo": "Retornáveis", "gestor": "Gabriella Araujo Reboucas Oliveira", "total": 4, "det": {"L506": 2, "L503": 1, "L505": 1}}, {"id": "99834672", "nome": "Jhonny Pereira De Paiva", "linha": "L561", "grupo": "One Way", "gestor": "Renan Dos Santos Cavalleiro", "total": 4, "det": {"CIP": 2, "L561": 2}}, {"id": "99007234", "nome": "Cristiano Suzano Luiz", "linha": "L506", "grupo": "Retornáveis", "gestor": "Rodrigo De Brito Silva", "total": 3, "det": {"L501": 2, "NÃO INFORMADO": 1}}, {"id": "99736836", "nome": "Velter Ferreira Cavalcante Junior", "linha": "L542", "grupo": "Retornáveis", "gestor": "Laercio Da Silva", "total": 3, "det": {"L542": 3}}, {"id": "99744228", "nome": "Rodrigo Marques Guerra De Lima", "linha": "L511", "grupo": "One Way", "gestor": "Renato Mangia Da Silva", "total": 3, "det": {"L511": 3}}, {"id": "99782156", "nome": "Lucas Morais Moniz Dos Santos", "linha": "L542", "grupo": "Retornáveis", "gestor": "Anderson Miranda Dos Santos", "total": 3, "det": {"L542": 3}}, {"id": "99826973", "nome": "Matheus Fernandes Santana De Souza", "linha": "L514", "grupo": "One Way", "gestor": "Jessica Gomes Da Silva", "total": 3, "det": {"L514": 3}}, {"id": "99022055", "nome": "Alexandre Santos Da Silva", "linha": "L511", "grupo": "One Way", "gestor": "Renato Mangia Da Silva", "total": 2, "det": {"L511": 2}}, {"id": "99718742", "nome": "Marcelo Santos Da Silva", "linha": "L512", "grupo": "One Way", "gestor": "Marcos Renato Silva Magalhaes", "total": 2, "det": {"L512": 2}}, {"id": "99725855", "nome": "Fabio Campbell Viana", "linha": "L521", "grupo": "Retornáveis", "gestor": "Thais Wilhelm Caldas", "total": 2, "det": {"L521": 2}}, {"id": "99751631", "nome": "Adriano Soares De Paula", "linha": "L541", "grupo": "One Way", "gestor": "Anderson Carlos Da Silva Rezende", "total": 2, "det": {"L541": 2}}, {"id": "99770108", "nome": "Felipe Moraes Dias", "linha": "L512", "grupo": "One Way", "gestor": "Jonathan Da Silva Santana", "total": 2, "det": {"L512": 2}}, {"id": "99807808", "nome": "Marcio Braga Tambara", "linha": "L542", "grupo": "Retornáveis", "gestor": "Anderson Miranda Dos Santos", "total": 2, "det": {"L542": 2}}, {"id": "99823727", "nome": "Marcos Roberto Da Silva", "linha": "L542", "grupo": "Retornáveis", "gestor": "Laercio Da Silva", "total": 2, "det": {"L506": 2}}, {"id": "99834686", "nome": "Vinicius Da Silva Ramos", "linha": "L541", "grupo": "One Way", "gestor": "Guilherme Sabino Da Silva Vieira", "total": 2, "det": {"L541": 2}}, {"id": "99834934", "nome": "Paulo Fernando Santana Rocha", "linha": "L514", "grupo": "One Way", "gestor": "Mariana De Souza Pinto", "total": 2, "det": {"L514": 2}}, {"id": "99835137", "nome": "Joao Vitor Da Rosa Jose Lopes", "linha": "L503", "grupo": "Retornáveis", "gestor": "Lisandro Da Silva Rocha", "total": 2, "det": {"L506": 2}}, {"id": "99835315", "nome": "Kelly Cristina Fernandes Da Silva", "linha": "L512", "grupo": "One Way", "gestor": "Jonathan Da Silva Santana", "total": 2, "det": {"L512": 2}}, {"id": "99836580", "nome": "Beatriz Fraga Pinto", "linha": "L511", "grupo": "One Way", "gestor": "Adriano De Freitas Pessoa", "total": 2, "det": {"L511": 2}}, {"id": "99003448", "nome": "Marcio Aristides Santos", "linha": "L521", "grupo": "Retornáveis", "gestor": "Renan De Oliveira Dos Santos", "total": 1, "det": {"L521": 1}}, {"id": "99003638", "nome": "Mauro Cesar Silva E Souza", "linha": "L511", "grupo": "One Way", "gestor": "Adriano De Freitas Pessoa", "total": 1, "det": {"L511": 1}}, {"id": "99721312", "nome": "Andre Monteiro Souza", "linha": "L541", "grupo": "One Way", "gestor": "Francisco Anderson Moraes Gomes", "total": 1, "det": {"L505": 1}}, {"id": "99752265", "nome": "Estevao Rodrigues Da Silva", "linha": "L506", "grupo": "Retornáveis", "gestor": "Lisandro Da Silva Rocha", "total": 1, "det": {"L506": 1}}, {"id": "99764147", "nome": "Stherkinne Martins Correa", "linha": "L511", "grupo": "One Way", "gestor": "Renato Mangia Da Silva", "total": 1, "det": {"L511": 1}}, {"id": "99796196", "nome": "Felipe Faria De Oliveira", "linha": "L541", "grupo": "One Way", "gestor": "Rodrigo De Brito Silva", "total": 1, "det": {"L506": 1}}, {"id": "99798093", "nome": "Odimar Barbalho Marinho", "linha": "L562", "grupo": "One Way", "gestor": "Higor Sampaio Rodrigues", "total": 1, "det": {"L562": 1}}, {"id": "99812861", "nome": "Lucas Ferreira Dos Santos", "linha": "L541", "grupo": "One Way", "gestor": "", "total": 1, "det": {"L541": 1}}, {"id": "99814602", "nome": "Igor Alexey Soares De Oliveira", "linha": "L542", "grupo": "Retornáveis", "gestor": "Laercio Da Silva", "total": 1, "det": {"L542": 1}}, {"id": "99815211", "nome": "Bruno Casseres Dos Santos", "linha": "L542", "grupo": "Retornáveis", "gestor": "Paulo Cesar Santos De Almeida", "total": 1, "det": {"L542": 1}}, {"id": "99828321", "nome": "Gabriel Marcos Pereira Maesse", "linha": "L521", "grupo": "Retornáveis", "gestor": "Thais Wilhelm Caldas", "total": 1, "det": {"L521": 1}}, {"id": "99834650", "nome": "Christian Banda Rosa", "linha": "L512", "grupo": "One Way", "gestor": "Gustavo Rodrigues Da Costa", "total": 1, "det": {"L512": 1}}, {"id": "99834683", "nome": "Daniel De Moura Ribeiro", "linha": "L561", "grupo": "One Way", "gestor": "Renan Dos Santos Cavalleiro", "total": 1, "det": {"L561": 1}}, {"id": "99841609", "nome": "Amarildo Correa Da Silva", "linha": "L514", "grupo": "One Way", "gestor": "Paulo Francisco Nascimento", "total": 1, "det": {"L514": 1}}, {"id": "99003447", "nome": "Samuel De Souza Ribeiro", "linha": "L506", "grupo": "Retornáveis", "gestor": "Lisandro Da Silva Rocha", "total": 0, "det": {}}, {"id": "99004138", "nome": "Jeferson Alcides Bazoni", "linha": "L561", "grupo": "One Way", "gestor": "Marcelo Lazari Alves", "total": 0, "det": {}}, {"id": "99005223", "nome": "Robson Dos Santos Flores", "linha": "L541", "grupo": "One Way", "gestor": "Rodrigo De Brito Silva", "total": 0, "det": {}}, {"id": "99013455", "nome": "Reginaldo Pereira Da Silva", "linha": "L503", "grupo": "Retornáveis", "gestor": "Luis Claudio Batista De Carvalho", "total": 0, "det": {}}, {"id": "99019933", "nome": "Alessandro De Souza Gomes", "linha": "L541", "grupo": "One Way", "gestor": "Rodrigo De Brito Silva", "total": 0, "det": {}}, {"id": "99022248", "nome": "Heleno Dantas Teixeira", "linha": "L541", "grupo": "One Way", "gestor": "Renan Cardoso Da Silva", "total": 0, "det": {}}, {"id": "99023388", "nome": "Carlos Henrique Freire De Souza", "linha": "L512", "grupo": "One Way", "gestor": "Renato Mangia Da Silva", "total": 0, "det": {}}, {"id": "99084495", "nome": "Sergio Santos Da Silva", "linha": "L562", "grupo": "One Way", "gestor": "Higor Sampaio Rodrigues", "total": 0, "det": {}}, {"id": "99703172", "nome": "Clebean Paiva Mendonca", "linha": "L541", "grupo": "One Way", "gestor": "Guilherme Sabino Da Silva Vieira", "total": 0, "det": {}}, {"id": "99703211", "nome": "Renato Eugenio", "linha": "L542", "grupo": "Retornáveis", "gestor": "Laercio Da Silva", "total": 0, "det": {}}, {"id": "99720314", "nome": "Carlos Alberto Coelho De Oliveira", "linha": "L512", "grupo": "One Way", "gestor": "Renato Mangia Da Silva", "total": 0, "det": {}}, {"id": "99721472", "nome": "Alex Luiz Lopes Freitas", "linha": "L562", "grupo": "One Way", "gestor": "Leandro Leite Ferraz", "total": 0, "det": {}}, {"id": "99724580", "nome": "Rubens Jeferson Cardoso Da Conceiçao", "linha": "L562", "grupo": "One Way", "gestor": "Renan Dos Santos Cavalleiro", "total": 0, "det": {}}, {"id": "99728022", "nome": "Edson Luiz Felicio Alves", "linha": "L541", "grupo": "One Way", "gestor": "Rodrigo De Brito Silva", "total": 0, "det": {}}, {"id": "99736621", "nome": "Allan Souza De Freitas", "linha": "L505", "grupo": "Retornáveis", "gestor": "Adriano Franciscao De Ananias", "total": 0, "det": {}}, {"id": "99743402", "nome": "Carlos Alberto Cunha De Oliveira Filho", "linha": "L561", "grupo": "One Way", "gestor": "Marcelo Lazari Alves", "total": 0, "det": {}}, {"id": "99743443", "nome": "Jefferson Campos Dos Santos", "linha": "L541", "grupo": "One Way", "gestor": "Carlos Felipe Duarte Coelho", "total": 0, "det": {}}, {"id": "99745808", "nome": "Lucas Cardoso Heringer", "linha": "L541", "grupo": "One Way", "gestor": "Davi De Souza Dias", "total": 0, "det": {}}, {"id": "99747291", "nome": "Marcus Vinicius Goncalves Do Nascimento", "linha": "L521", "grupo": "Retornáveis", "gestor": "Thais Wilhelm Caldas", "total": 0, "det": {}}, {"id": "99747885", "nome": "Julio Cesar Soares Campos", "linha": "L514", "grupo": "One Way", "gestor": "Carol Cristine Da Silva", "total": 0, "det": {}}, {"id": "99753756", "nome": "Osvaldo Luis De Oliveira", "linha": "L514", "grupo": "One Way", "gestor": "Mariana De Souza Pinto", "total": 0, "det": {}}, {"id": "99764943", "nome": "Eduardo Martins Da Silva", "linha": "L541", "grupo": "One Way", "gestor": "Anderson Carlos Da Silva Rezende", "total": 0, "det": {}}, {"id": "99773388", "nome": "Renato Alves Correia Neto", "linha": "L505", "grupo": "Retornáveis", "gestor": "Adriano Franciscao De Ananias", "total": 0, "det": {}}, {"id": "99779172", "nome": "Adonias Edivaldo Do Carmo Silva", "linha": "L562", "grupo": "One Way", "gestor": "Higor Sampaio Rodrigues", "total": 0, "det": {}}, {"id": "99796195", "nome": "Fabiano Felipe Macedo Ferreira", "linha": "L512", "grupo": "One Way", "gestor": "Gustavo Rodrigues Da Costa", "total": 0, "det": {}}, {"id": "99802305", "nome": "Yan Da Conceicao Lobato", "linha": "L562", "grupo": "One Way", "gestor": "Leandro Leite Ferraz", "total": 0, "det": {}}, {"id": "99803580", "nome": "Daniel Soares Garcia Pianissola", "linha": "L512", "grupo": "One Way", "gestor": "Ian Olivier Kusakawa Shiba", "total": 0, "det": {}}, {"id": "99807399", "nome": "Leandro Souza Da Rosa Abreu", "linha": "L542", "grupo": "Retornáveis", "gestor": "Anderson Miranda Dos Santos", "total": 0, "det": {}}, {"id": "99807809", "nome": "Diego De Souza Alves De Lima", "linha": "L541", "grupo": "One Way", "gestor": "Luis Claudio Batista De Carvalho", "total": 0, "det": {}}, {"id": "99809702", "nome": "Marcio Terra Pereira", "linha": "L521", "grupo": "Retornáveis", "gestor": "Thais Wilhelm Caldas", "total": 0, "det": {}}, {"id": "99811190", "nome": "Alex Gomes De Almeida", "linha": "L541", "grupo": "One Way", "gestor": "Anderson Carlos Da Silva Rezende", "total": 0, "det": {}}, {"id": "99811339", "nome": "Joao Manoel Souza Azevedo Da Silva", "linha": "L541", "grupo": "One Way", "gestor": "Francisco Anderson Moraes Gomes", "total": 0, "det": {}}, {"id": "99818837", "nome": "Beatriz Dos Santos Costa", "linha": "L541", "grupo": "One Way", "gestor": "Caique Bortoluci Bastos", "total": 0, "det": {}}, {"id": "99822378", "nome": "Danielle Stephanie Pereira Dos Santos", "linha": "L506", "grupo": "Retornáveis", "gestor": "Luiz Ricardo Medeiros", "total": 0, "det": {}}, {"id": "99823728", "nome": "David Carlos Teles Dos Santos", "linha": "L506", "grupo": "Retornáveis", "gestor": "Rodrigo De Oliveira Silva", "total": 0, "det": {}}, {"id": "99826853", "nome": "Vittoria Cruz Barcelos", "linha": "L541", "grupo": "One Way", "gestor": "Guilherme Sabino Da Silva Vieira", "total": 0, "det": {}}, {"id": "99833789", "nome": "Luiz Henrique Macedo Novaes", "linha": "L562", "grupo": "One Way", "gestor": "Leandro Leite Ferraz", "total": 0, "det": {}}, {"id": "99833791", "nome": "Geovana De Oliveira Portugal Do Nascimento", "linha": "L562", "grupo": "One Way", "gestor": "Jonas Batista Campelo De Brito", "total": 0, "det": {}}, {"id": "99834690", "nome": "Graziele Souza Dos Santos", "linha": "L512", "grupo": "One Way", "gestor": "Jonathan Da Silva Santana", "total": 0, "det": {}}, {"id": "99834905", "nome": "Lucas Correia Barbosa", "linha": "L561", "grupo": "One Way", "gestor": "Leandro Leite Ferraz", "total": 0, "det": {}}, {"id": "99835140", "nome": "Marcos Paulo Muniz Telo De Sampaio", "linha": "L512", "grupo": "One Way", "gestor": "Renato Mangia Da Silva", "total": 0, "det": {}}, {"id": "99836579", "nome": "Ana Carolina Goncalves Ferreira", "linha": "L501", "grupo": "Retornáveis", "gestor": "Pamella Cristina Gonzaga Nascimento Nazareth", "total": 0, "det": {}}, {"id": "99836605", "nome": "Marcelo Henrique Matias", "linha": "L506", "grupo": "Retornáveis", "gestor": "Rodrigo De Oliveira Silva", "total": 0, "det": {}}, {"id": "99840501", "nome": "Vitor Freitas Do Nascimento", "linha": "L541", "grupo": "One Way", "gestor": "Francisco Anderson Moraes Gomes", "total": 0, "det": {}}, {"id": "99841300", "nome": "Eduardo Mesquita", "linha": "L511", "grupo": "One Way", "gestor": "Adriano De Freitas Pessoa", "total": 0, "det": {}}, {"id": "99841869", "nome": "Brendon Silva Cavalcanti", "linha": "L511", "grupo": "One Way", "gestor": "Renato Mangia Da Silva", "total": 0, "det": {}}, {"id": "99842927", "nome": "Carlos Augusto Pereira Santos", "linha": "L511", "grupo": "One Way", "gestor": "Susan Melo Da Rocha", "total": 0, "det": {}}, {"id": "99844716", "nome": "Yhago Luan Soares Franca", "linha": "L501", "grupo": "Retornáveis", "gestor": "Renan De Oliveira Dos Santos", "total": 0, "det": {}}];
+const GROUPS = {'Retornáveis':['L501','L502','L503','L505','L506','L521','L542'], 'One Way':['L511','L512','L514','L541','L561','L562']};
+const HIST = [{"d": "20/10", "ate": "18/10", "lines": {"L501": [9, 13], "L502": [0, 0], "L503": [5, 8], "L505": [6, 15], "L506": [7, 22], "L521": [2, 8], "L542": [3, 18], "L511": [2, 16], "L512": [4, 21], "L514": [5, 17], "L541": [13, 42], "L561": [3, 10], "L562": [5, 16]}, "techs": {"99013935": 32, "99721540": 30, "99840800": 26, "99752347": 22, "99799274": 22, "99720843": 20, "99818034": 20, "99004901": 19, "99713626": 19, "99758528": 19, "99772571": 19, "99750708": 18, "99002966": 17, "99771238": 17, "99722318": 16, "99744041": 16, "99744344": 16, "99759827": 16, "99002943": 15, "99746957": 15, "99751172": 15, "99016330": 14, "99722300": 14, "99728799": 14, "99744163": 14, "99752397": 14, "99777407": 14, "99701166": 13, "99749878": 13, "99802176": 13, "99802178": 13, "99003242": 12, "99716683": 12, "99748136": 12, "99748314": 12, "99721121": 11, "99721301": 11, "99721314": 11, "99726753": 11, "99729169": 11, "99755033": 11, "99763067": 11, "99765307": 11, "99827152": 11, "99834681": 11, "99834685": 11, "99715656": 10, "99722434": 10, "99726225": 10, "99736594": 10, "99743724": 10, "99752300": 10, "99771121": 10, "99772016": 10, "99796764": 10, "99810897": 10, "99833826": 10, "99834675": 10, "99834797": 10, "99072664": 9, "99718422": 9, "99727957": 9, "99732002": 9, "99737720": 9, "99737793": 9, "99759773": 9, "99760641": 9, "99820007": 9, "99834897": 9, "99836581": 9, "99845890": 9, "99019917": 8, "99100450": 8, "99727995": 8, "99743450": 8, "99744112": 8, "99747527": 8, "99764141": 8, "99804200": 8, "99817917": 8, "99818035": 8, "99827681": 8, "99844722": 8, "99003071": 7, "99003440": 7, "99024856": 7, "99713593": 7, "99744149": 7, "99744230": 7, "99745035": 7, "99745807": 7, "99749224": 7, "99761265": 7, "99777429": 7, "99842526": 7, "99844731": 7, "99715867": 6, "99728026": 6, "99751052": 6, "99804206": 6, "99805658": 6, "99824655": 6, "99834898": 6, "99835136": 6, "99841619": 6, "99017590": 5, "99019615": 5, "99721864": 5, "99722235": 5, "99723554": 5, "99748366": 5, "99778010": 5, "99811182": 5, "99823726": 5, "99828320": 5, "99835312": 5, "99002739": 4, "99002994": 4, "99719490": 4, "99724999": 4, "99747534": 4, "99758566": 4, "99764889": 4, "99772031": 4, "99796381": 4, "99824308": 4, "99834672": 4, "99007234": 3, "99736836": 3, "99744228": 3, "99782156": 3, "99826973": 3, "99022055": 2, "99718742": 2, "99725855": 2, "99751631": 2, "99770108": 2, "99807808": 2, "99823727": 2, "99834686": 2, "99834934": 2, "99835137": 2, "99835315": 2, "99836580": 2, "99003448": 1, "99003638": 1, "99721312": 1, "99752265": 1, "99764147": 1, "99796196": 1, "99798093": 1, "99812861": 1, "99814602": 1, "99815211": 1, "99828321": 1, "99834650": 1, "99834683": 1, "99841609": 1, "99003447": 0, "99004138": 0, "99005223": 0, "99013455": 0, "99019933": 0, "99022248": 0, "99023388": 0, "99084495": 0, "99703172": 0, "99703211": 0, "99720314": 0, "99721472": 0, "99724580": 0, "99728022": 0, "99736621": 0, "99743402": 0, "99743443": 0, "99745808": 0, "99747291": 0, "99747885": 0, "99753756": 0, "99764943": 0, "99773388": 0, "99779172": 0, "99796195": 0, "99802305": 0, "99803580": 0, "99807399": 0, "99807809": 0, "99809702": 0, "99811190": 0, "99811339": 0, "99818837": 0, "99822378": 0, "99823728": 0, "99826853": 0, "99833789": 0, "99833791": 0, "99834690": 0, "99834905": 0, "99835140": 0, "99836579": 0, "99836605": 0, "99840501": 0, "99841300": 0, "99841869": 0, "99842927": 0, "99844716": 0}}, {"d": "21/10", "ate": "18/10", "lines": {"L501": [9, 13], "L502": [0, 0], "L503": [5, 8], "L505": [6, 15], "L506": [7, 22], "L521": [2, 8], "L542": [3, 18], "L511": [2, 16], "L512": [4, 21], "L514": [5, 17], "L541": [13, 42], "L561": [3, 10], "L562": [5, 16]}, "techs": {"99013935": 32, "99721540": 30, "99840800": 26, "99752347": 22, "99799274": 22, "99720843": 20, "99818034": 20, "99004901": 19, "99713626": 19, "99758528": 19, "99772571": 19, "99750708": 18, "99002966": 17, "99771238": 17, "99722318": 16, "99744041": 16, "99744344": 16, "99759827": 16, "99002943": 15, "99746957": 15, "99751172": 15, "99016330": 14, "99722300": 14, "99728799": 14, "99744163": 14, "99752397": 14, "99777407": 14, "99701166": 13, "99749878": 13, "99802176": 13, "99802178": 13, "99003242": 12, "99716683": 12, "99748136": 12, "99748314": 12, "99721121": 11, "99721301": 11, "99721314": 11, "99726753": 11, "99729169": 11, "99755033": 11, "99763067": 11, "99765307": 11, "99827152": 11, "99834681": 11, "99834685": 11, "99715656": 10, "99722434": 10, "99726225": 10, "99736594": 10, "99743724": 10, "99752300": 10, "99771121": 10, "99772016": 10, "99796764": 10, "99810897": 10, "99833826": 10, "99834675": 10, "99834797": 10, "99072664": 9, "99718422": 9, "99727957": 9, "99732002": 9, "99737720": 9, "99737793": 9, "99759773": 9, "99760641": 9, "99820007": 9, "99834897": 9, "99836581": 9, "99845890": 9, "99019917": 8, "99100450": 8, "99727995": 8, "99743450": 8, "99744112": 8, "99747527": 8, "99764141": 8, "99804200": 8, "99817917": 8, "99818035": 8, "99827681": 8, "99844722": 8, "99003071": 7, "99003440": 7, "99024856": 7, "99713593": 7, "99744149": 7, "99744230": 7, "99745035": 7, "99745807": 7, "99749224": 7, "99761265": 7, "99777429": 7, "99842526": 7, "99844731": 7, "99715867": 6, "99728026": 6, "99751052": 6, "99804206": 6, "99805658": 6, "99824655": 6, "99834898": 6, "99835136": 6, "99841619": 6, "99017590": 5, "99019615": 5, "99721864": 5, "99722235": 5, "99723554": 5, "99748366": 5, "99778010": 5, "99811182": 5, "99823726": 5, "99828320": 5, "99835312": 5, "99002739": 4, "99002994": 4, "99719490": 4, "99724999": 4, "99747534": 4, "99758566": 4, "99764889": 4, "99772031": 4, "99796381": 4, "99824308": 4, "99834672": 4, "99007234": 3, "99736836": 3, "99744228": 3, "99782156": 3, "99826973": 3, "99022055": 2, "99718742": 2, "99725855": 2, "99751631": 2, "99770108": 2, "99807808": 2, "99823727": 2, "99834686": 2, "99834934": 2, "99835137": 2, "99835315": 2, "99836580": 2, "99003448": 1, "99003638": 1, "99721312": 1, "99752265": 1, "99764147": 1, "99796196": 1, "99798093": 1, "99812861": 1, "99814602": 1, "99815211": 1, "99828321": 1, "99834650": 1, "99834683": 1, "99841609": 1, "99003447": 0, "99004138": 0, "99005223": 0, "99013455": 0, "99019933": 0, "99022248": 0, "99023388": 0, "99084495": 0, "99703172": 0, "99703211": 0, "99720314": 0, "99721472": 0, "99724580": 0, "99728022": 0, "99736621": 0, "99743402": 0, "99743443": 0, "99745808": 0, "99747291": 0, "99747885": 0, "99753756": 0, "99764943": 0, "99773388": 0, "99779172": 0, "99796195": 0, "99802305": 0, "99803580": 0, "99807399": 0, "99807809": 0, "99809702": 0, "99811190": 0, "99811339": 0, "99818837": 0, "99822378": 0, "99823728": 0, "99826853": 0, "99833789": 0, "99833791": 0, "99834690": 0, "99834905": 0, "99835140": 0, "99836579": 0, "99836605": 0, "99840501": 0, "99841300": 0, "99841869": 0, "99842927": 0, "99844716": 0}}];
+const CUR = HIST[HIST.length-1], PREV = HIST.length > 1 ? HIST[HIST.length-2] : null;
+const BI = CUR.lines;
+function trend(cur, prev, kind){
+  if(prev === undefined || prev === null) return '<span class="tr new">novo</span>';
+  const dlt = cur - prev;
+  const fmt = kind === 'pp' ? (Math.abs(dlt).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1}) + ' p.p.') : String(Math.abs(dlt));
+  if(Math.abs(dlt) < 1e-9) return `<span class="tr eq" title="Manteve (${PREV.d}: igual)"><span class="ic"></span></span>`;
+  const up = dlt > 0;
+  return `<span class="tr ${up?'up':'down'}" title="${PREV.d} → ${CUR.d}"><span class="ic">${up?'▲':'▼'}</span>${up?'+':'−'}${fmt}</span>`;
+}
+function prevStats(lines){
+  if(!PREV) return null;
+  const n = lines.reduce((s,l)=>s+(PREV.lines[l]||[0,0])[1],0), hi = lines.reduce((s,l)=>s+(PREV.lines[l]||[0,0])[0],0);
+  return {n, hi, pct: n ? hi/n*100 : 0};
+}
+function prevOrd(rows){ return PREV ? rows.reduce((s,d)=>s+(PREV.techs[d.id]||0),0) : null; }
+const PEND = new Set(['L505','L511','L512','L541','L562']);
+const scopeLines = () => sel !== 'Todas' ? [sel] : groupLines();
+let grp = 'Todas';
+const groupLines = () => grp === 'Todas' ? [...GROUPS['Retornáveis'], ...GROUPS['One Way']] : GROUPS[grp];
+const META = 70, CUT = 10;
+let sel = 'Todas', q = '', sortK = 'total', sortDir = -1, showAll = false;
+const LIMIT = 25;
+
+const $ = id => document.getElementById(id);
+const fmtPct = v => v.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1}) + '%';
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+// theme toggle
+(function(){
+  const r = document.documentElement;
+  try{ const t = localStorage.getItem('theme'); if(t) r.dataset.theme = t; }catch(e){}
+  $('themeBtn').onclick = () => {
+    const dark = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    r.dataset.theme = dark ? 'light' : 'dark';
+    try{ localStorage.setItem('theme', r.dataset.theme); }catch(e){}
+  };
+})();
+
+function byLine(l){ return DATA.filter(d => d.linha === l); }
+function stats(rows, lines){
+  let n = rows.length, hi = rows.filter(d => d.total >= CUT).length;
+  const ord = rows.reduce((s,d)=>s+d.total,0);
+  if(lines){ n = lines.reduce((s,l)=>s+BI[l][1],0); hi = lines.reduce((s,l)=>s+BI[l][0],0); }
+  return {n, hi, ord, pct: n ? hi/n*100 : 0, avg: rows.length ? ord/rows.length : 0};
+}
+function scope(){ return sel !== 'Todas' ? byLine(sel) : DATA.filter(d => groupLines().includes(d.linha)); }
+function scopeName(){ return sel !== 'Todas' ? 'da ' + sel : grp === 'Todas' ? 'de todas as linhas' : 'do ' + grp; }
+
+function renderFilters(){
+  const g = $('groups'); g.innerHTML = '';
+  ['Todas','Retornáveis','One Way'].forEach(n => {
+    const b = document.createElement('button'); b.type = 'button'; b.textContent = n;
+    b.setAttribute('aria-pressed', grp === n);
+    b.onclick = () => { grp = n; sel = 'Todas'; showAll = false; renderAll(); };
+    g.appendChild(b);
+  });
+  const el = $('filters'); el.innerHTML = '';
+  ['Todas', ...groupLines()].forEach(l => {
+    const b = document.createElement('button');
+    b.className = 'chip'; b.type = 'button'; b.textContent = l;
+    b.setAttribute('aria-pressed', sel === l);
+    if(l !== 'Todas' && !byLine(l).length){ b.disabled = true; b.title = 'Sem técnicos no QLP em outubro'; }
+    b.onclick = () => { sel = l; renderAll(); };
+    el.appendChild(b);
+  });
+}
+
+function renderKpis(){
+  const s = stats(scope(), scopeLines());
+  const ok = s.pct >= META;
+  const p = prevStats(scopeLines()), po = prevOrd(scope());
+  $('kpis').innerHTML = `
+    <div class="card kpi"><div class="lbl">% Técnicos ≥ 10 ordens</div><div class="val">${fmtPct(s.pct)}</div>
+      <div class="foot"><span class="status ${ok?'ok':'bad'}">${ok?'✓ Dentro':'✕ Abaixo'}</span> da meta ≥ 70% ${p?trend(s.pct,p.pct,'pp'):''}</div></div>
+    <div class="card kpi"><div class="lbl">Técnicos ≥ 10 ordens</div><div class="val">${s.hi}<span style="font-size:18px;color:var(--muted)"> / ${s.n}</span></div>
+      <div class="foot">faltam ${Math.max(0, Math.ceil(s.n*META/100) - s.hi)} p/ atingir a meta ${p?trend(s.hi,p.hi):''}</div></div>
+    <div class="card kpi"><div class="lbl">Ordens abertas</div><div class="val">${s.ord.toLocaleString('pt-BR')}</div>
+      <div class="foot">pelos técnicos ${scopeName()} ${po!==null?trend(s.ord,po):''}</div></div>
+    <div class="card kpi"><div class="lbl">Média por técnico</div><div class="val">${s.avg.toLocaleString('pt-BR',{maximumFractionDigits:1})}</div>
+      <div class="foot">ordens no mês</div></div>`;
+}
+
+function renderLines(){
+  const el = $('lines'); el.innerHTML = '';
+  const gs = grp === 'Todas' ? ['Retornáveis','One Way'] : [grp];
+  gs.forEach(gn => {
+  const gst = stats(DATA.filter(d => GROUPS[gn].includes(d.linha)), GROUPS[gn]);
+  const h = document.createElement('div'); h.className = 'lgroup';
+  const gp = prevStats(GROUPS[gn]);
+  h.innerHTML = `${gn}<span>${fmtPct(gst.pct)} · ${gst.hi}/${gst.n} ${gp?trend(gst.pct,gp.pct,'pp'):''}</span>`;
+  el.appendChild(h);
+  GROUPS[gn].forEach(l => {
+    const s = stats(byLine(l), [l]);
+    const row = document.createElement('div');
+    row.className = 'lrow' + (sel !== 'Todas' && sel !== l ? ' dim' : '');
+    row.innerHTML = `<div class="lname">${l}${PEND.has(l)?'<span class="pend">†</span>':''}</div>
+      <div class="ltrack"><div class="lbar" style="width:${s.pct}%"></div><div class="lmeta" style="left:${META}%"></div></div>
+      <div class="lval">${s.n ? `<b>${fmtPct(s.pct)}</b> · ${s.hi}/${s.n}` : 'sem técnicos'}</div>
+      <div>${s.n && PREV ? trend(s.pct, prevStats([l]).pct, 'pp') : ''}</div>`;
+    if(s.n){
+      row.onclick = () => { sel = sel === l ? 'Todas' : l; renderAll(); };
+      hover(row, () => `<div class="t">${l}</div><div class="s">${s.hi} de ${s.n} técnicos com ≥ 10 ordens</div>
+        <table><tr><td>% atingimento</td><td>${fmtPct(s.pct)}</td></tr>${PREV?`<tr><td>% em ${PREV.d}</td><td>${fmtPct(prevStats([l]).pct)}</td></tr>`:''}<tr><td>Ordens abertas</td><td>${s.ord}</td></tr><tr><td>Média por técnico</td><td>${s.avg.toFixed(1).replace('.',',')}</td></tr></table>`);
+    }
+    el.appendChild(row);
+  });
+  });
+}
+
+function renderDist(){
+  const rows = scope();
+  const bins = [[0,0,'0'],[1,4,'1–4'],[5,9,'5–9'],[10,14,'10–14'],[15,19,'15–19'],[20,29,'20–29'],[30,999,'30+']];
+  const counts = bins.map(([a,b]) => rows.filter(d => d.total >= a && d.total <= b));
+  const max = Math.max(1, ...counts.map(c => c.length));
+  $('dist').innerHTML = ''; $('daxis').innerHTML = '';
+  bins.forEach(([a,b,lbl], i) => {
+    const c = counts[i];
+    const col = document.createElement('div'); col.className = 'dcol';
+    col.innerHTML = `<div style="font-size:12px;color:var(--text2);margin-bottom:3px;font-variant-numeric:tabular-nums">${c.length||''}</div><div class="dbar ${a>=CUT?'hi':''}" style="height:${c.length/max*100}%;min-height:${c.length?2:0}px"></div>`;
+    hover(col, () => `<div class="t">${lbl} ordens</div><div class="s">${c.length} técnico(s)</div>` +
+      (c.length ? `<table>${c.slice(0,10).map(d=>`<tr><td>${esc(d.nome)}</td><td>${d.total}</td></tr>`).join('')}${c.length>10?`<tr><td>+${c.length-10} outros</td><td></td></tr>`:''}</table>` : ''));
+    $('dist').appendChild(col);
+    const ax = document.createElement('span'); ax.textContent = lbl; $('daxis').appendChild(ax);
+  });
+  const s = stats(rows);
+  $('distHint').textContent = `${s.n} técnicos ${scopeName()} · cada barra é uma faixa de ordens no mês`;
+}
+
+function filtered(){
+  const t = q.trim().toLowerCase();
+  return scope().filter(d => !t || d.nome.toLowerCase().includes(t) || d.id.includes(t));
+}
+
+function renderRank(){
+  const rows = filtered().slice().sort((a,b) => b.total - a.total || a.nome.localeCompare(b.nome));
+  const max = Math.max(CUT, ...DATA.map(d => d.total));
+  const el = $('rank'); el.innerHTML = '';
+  if(!rows.length){ el.innerHTML = '<div class="empty">Nenhum técnico encontrado.</div>'; return; }
+  const list = (showAll || q.trim()) ? rows : rows.slice(0, LIMIT);
+  list.forEach(d => {
+    const r = document.createElement('div');
+    r.className = 'rrow' + (d.total === 0 ? ' zero' : '');
+    r.innerHTML = `<div class="rname" title="${esc(d.nome)}">${esc(d.nome)}<small>${d.id}</small></div>
+      <div class="rline">${d.linha}</div>
+      <div class="rtrack"><div class="rbar ${d.total>=CUT?'hi':''}" style="width:${d.total/max*100}%"></div><div class="rref" style="left:${CUT/max*100}%"></div></div>
+      <div class="rval">${d.total}</div>
+      <div>${PREV ? trend(d.total, PREV.techs[d.id]) : ''}</div>`;
+    hover(r, () => tipTech(d));
+    el.appendChild(r);
+  });
+  if(rows.length > LIMIT && !q.trim()){
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'more';
+    b.textContent = showAll ? 'Mostrar só os 25 primeiros' : `Mostrar todos os ${rows.length} técnicos`;
+    b.onclick = () => { showAll = !showAll; renderRank(); };
+    el.appendChild(b);
+  }
+}
+
+function tipTech(d){
+  const det = Object.entries(d.det);
+  return `<div class="t">${esc(d.nome)}</div><div class="s">ID ${d.id} · ${d.linha} · ${esc(d.gestor)}</div>
+    <table>${det.length ? det.map(([k,v]) => `<tr><td>${esc(k)}</td><td>${v}</td></tr>`).join('') : '<tr><td>Nenhuma ordem aberta</td><td></td></tr>'}
+    <tr class="tot"><td>Total (${CUR.d})</td><td>${d.total}</td></tr>${PREV?`<tr><td>Total (${PREV.d})</td><td>${PREV.techs[d.id] ?? '—'}</td></tr>`:''}</table>
+    <div style="margin-top:6px" class="status ${d.total>=CUT?'ok':'bad'}">${d.total>=CUT?'✓ Atinge ≥ 10':'✕ Faltam '+(CUT-d.total)+' ordens'}</div>`;
+}
+
+function renderTable(){
+  const rows = filtered().slice().sort((a,b) => {
+    const x = a[sortK], y = b[sortK];
+    return (typeof x === 'number' ? x - y : String(x).localeCompare(String(y))) * sortDir;
+  });
+  $('tblCount').textContent = rows.length;
+  $('tbody').innerHTML = rows.map(d => `<tr>
+    <td>${esc(d.nome)}</td><td>${d.id}</td><td>${d.linha}</td><td>${esc(d.gestor)}</td>
+    <td class="num">${d.total}</td><td>${PREV ? trend(d.total, PREV.techs[d.id]) : ''}</td>
+    <td><span class="status ${d.total>=CUT?'ok':'bad'}">${d.total>=CUT?'✓ Sim':'✕ Não'}</span></td>
+    <td class="det">${Object.entries(d.det).map(([k,v])=>`${esc(k)}: ${v}`).join(' · ') || '—'}</td></tr>`).join('');
+}
+document.querySelectorAll('th[data-k]').forEach(th => th.onclick = () => {
+  const k = th.dataset.k; sortDir = sortK === k ? -sortDir : (k === 'total' ? -1 : 1); sortK = k; renderTable();
+});
+
+// tooltip
+const tip = $('tip');
+const canHover = () => matchMedia('(hover:hover)').matches;
+function hover(el, html){
+  el.addEventListener('mouseenter', () => { if(!canHover()) return; tip.innerHTML = html(); tip.classList.add('on'); });
+  el.addEventListener('mousemove', e => {
+    if(!canHover()) return;
+    const w = tip.offsetWidth, h = tip.offsetHeight;
+    let x = e.clientX + 14, y = e.clientY + 14;
+    if(x + w > innerWidth - 8) x = e.clientX - w - 14;
+    if(y + h > innerHeight - 8) y = e.clientY - h - 14;
+    tip.style.left = Math.max(8,x) + 'px'; tip.style.top = Math.max(8,y) + 'px';
+  });
+  el.addEventListener('mouseleave', () => { if(canHover()) tip.classList.remove('on'); });
+  el.addEventListener('click', e => {
+    if(matchMedia('(hover:hover)').matches) return;
+    e.stopPropagation();
+    tip.innerHTML = html(); tip.classList.add('on');
+    const rc = el.getBoundingClientRect(), h = tip.offsetHeight;
+    let y = rc.bottom + 6; if(y + h > innerHeight - 8) y = Math.max(8, rc.top - h - 6);
+    tip.style.top = y + 'px'; tip.style.left = '12px';
+  });
+}
+document.addEventListener('click', () => { if(!matchMedia('(hover:hover)').matches) tip.classList.remove('on'); });
+addEventListener('scroll', () => { if(!matchMedia('(hover:hover)').matches) tip.classList.remove('on'); }, {passive:true});
+
+$('search').addEventListener('input', e => { q = e.target.value; renderRank(); renderTable(); });
+
+function renderCmp(){ $('cmp').innerHTML = PREV ? `Evolução: <b>${CUR.d}</b> comparado a <b>${PREV.d}</b> · ordens no BI até ${CUR.ate}` : `Primeira leitura (${CUR.d}) · a evolução aparece a partir da próxima atualização`; }
+function renderAll(){ renderCmp(); renderFilters(); renderKpis(); renderLines(); renderDist(); renderRank(); renderTable(); }
+renderAll();
+</script>
+
+</body>
+</html>
