@@ -4,9 +4,10 @@
 :root{
   color-scheme: light;
   --bg:#f4f3f0; --surface:#fcfcfb; --border:#e4e2dc; --grid:#ebe9e4;
-  --text:#0b0b0b; --text2:#52514e; --muted:#7c7b76;
+  --text:#0b0b0b; --text2:#4a4946; --muted:#5f5e59;
   --series:#2a78d6; --series-soft:#b7d3f6; --neutral:#c9c7c0;
-  --good:#0ca30c; --good-text:#006300; --critical:#d03b3b; --critical-text:#b02e2e; --warn:#fab219; --warn-text:#9a6400;
+  --good:#12a312; --good-text:#006300; --critical:#d03b3b; --critical-text:#b0201f; --warn:#b07a00; --warn-text:#7a5200;
+  --good-bg:#dff3df; --crit-bg:#fbe3e3;
   --chip:#ecebe7; --chip-on:#0b0b0b; --chip-on-text:#fff;
   --shadow:0 1px 2px rgba(0,0,0,.05);
 }
@@ -14,9 +15,10 @@
   :root:not([data-theme="light"]){
     color-scheme: dark;
     --bg:#121211; --surface:#1a1a19; --border:#2e2e2b; --grid:#2a2a27;
-    --text:#f0efec; --text2:#c3c2b7; --muted:#8f8e86;
+    --text:#f0efec; --text2:#d0cfc6; --muted:#b0afa8;
     --series:#3987e5; --series-soft:#1c3f6b; --neutral:#4a4a45;
-    --good-text:#3fc23f; --critical-text:#ef7a7a; --warn-text:#fab219;
+    --good:#2fb84a; --critical:#e85a5a; --warn:#fab219;
+    --good-text:#5ee07a; --critical-text:#ff8a8a; --warn-text:#fab219; --good-bg:#123a1e; --crit-bg:#4a1c1c;
     --chip:#262624; --chip-on:#f0efec; --chip-on-text:#121211;
     --shadow:none;
   }
@@ -24,9 +26,10 @@
 :root[data-theme="dark"]{
   color-scheme: dark;
   --bg:#121211; --surface:#1a1a19; --border:#2e2e2b; --grid:#2a2a27;
-  --text:#f0efec; --text2:#c3c2b7; --muted:#8f8e86;
+  --text:#f0efec; --text2:#d0cfc6; --muted:#b0afa8;
   --series:#3987e5; --series-soft:#1c3f6b; --neutral:#4a4a45;
-  --good-text:#3fc23f; --critical-text:#ef7a7a; --warn-text:#fab219;
+  --good:#2fb84a; --critical:#e85a5a; --warn:#fab219;
+  --good-text:#5ee07a; --critical-text:#ff8a8a; --warn-text:#fab219; --good-bg:#123a1e; --crit-bg:#4a1c1c;
   --chip:#262624; --chip-on:#f0efec; --chip-on-text:#121211;
   --shadow:none;
 }
@@ -37,7 +40,9 @@ header{display:flex;justify-content:space-between;align-items:flex-start;gap:16p
 h1{font-size:24px;margin:0 0 4px;letter-spacing:-.01em}
 .sub{color:var(--text2);margin:0}
 .src{color:var(--muted);font-size:12px;margin-top:4px}
-.theme-btn{border:1px solid var(--border);background:var(--surface);color:var(--text2);border-radius:8px;padding:6px 10px;font:inherit;font-size:12px;cursor:pointer}
+.theme-btn{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:8px;padding:7px 14px;font:inherit;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap}
+.hdr-r{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.stale{display:inline-block;margin-left:6px;font-size:12.5px;font-weight:700;color:var(--critical-text);background:var(--crit-bg);border-radius:6px;padding:1px 7px}
 .filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
 .filters{flex-direction:column;align-items:flex-start}
 .seg{display:inline-flex;background:var(--chip);border-radius:10px;padding:3px;gap:2px}
@@ -45,26 +50,28 @@ h1{font-size:24px;margin:0 0 4px;letter-spacing:-.01em}
 .seg button[aria-pressed="true"]{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.12)}
 .seg button:focus-visible,.chip:focus-visible{outline:2px solid var(--series);outline-offset:2px}
 .chips{display:flex;gap:8px;flex-wrap:wrap}
-.lgroup{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;font-weight:650;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;padding:10px 0 4px;border-bottom:1px solid var(--border);margin-bottom:4px}
+.lgroup{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;font-weight:650;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;padding:10px 0 4px;border-bottom:1px solid var(--border);margin-bottom:4px}
 .lgroup:first-child{padding-top:0}
 .lgroup span{font-variant-numeric:tabular-nums;text-transform:none;letter-spacing:0;font-weight:500}
-.tr{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:650;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tr{display:inline-flex;align-items:center;gap:3px;font-size:12.5px;font-weight:650;font-variant-numeric:tabular-nums;white-space:nowrap}
 .tr.up{color:var(--good-text)} .tr.down{color:var(--critical-text)} .tr.eq{color:var(--warn-text)} .tr.new{color:var(--muted);font-weight:500}
-.tr .ic{font-size:10px;line-height:1}
-.tr.eq .ic{display:inline-block;width:12px;height:3px;border-radius:2px;background:var(--warn);align-self:center}
-.cmp{font-size:12px;color:var(--muted);margin:-8px 0 16px}
+.tr .ic{font-size:11px;line-height:1}
+.tr.eq .ic{display:inline-block;width:14px;height:4px;border-radius:2px;background:var(--warn);align-self:center}
+.cmp{font-size:13px;color:var(--text2);margin:-8px 0 16px}
 .trlegend{display:flex;gap:14px;flex-wrap:wrap}
 footer{margin-top:28px;padding-top:14px;border-top:1px solid var(--border);color:var(--muted);font-size:12px;line-height:1.6}
-.pend{display:inline-block;font-size:10px;font-weight:600;color:var(--critical-text);margin-left:4px}
+.pend{display:inline-block;font-size:14px;font-weight:800;color:var(--critical-text);margin-left:3px;line-height:1;cursor:help}
 .chip{border:0;background:var(--chip);color:var(--text);border-radius:999px;padding:7px 14px;font:inherit;font-size:13px;font-weight:500;cursor:pointer}
 .chip[aria-pressed="true"]{background:var(--chip-on);color:var(--chip-on-text)}
-.chip:disabled{opacity:.45;cursor:not-allowed}
+.chip:disabled{background:transparent;color:var(--muted);box-shadow:inset 0 0 0 1px var(--border);cursor:not-allowed}
 .search{margin-left:auto;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:8px;padding:7px 12px;font:inherit;font-size:13px;min-width:220px}
 .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;box-shadow:var(--shadow)}
-.kpi .lbl{color:var(--text2);font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
-.kpi .val{font-size:32px;font-weight:650;letter-spacing:-.02em;margin-top:6px;font-variant-numeric:tabular-nums}
-.kpi .foot{font-size:12px;color:var(--muted);margin-top:2px}
+.kpi .lbl{color:var(--text2);font-size:12.5px;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+.kpi .val{font-size:34px;font-weight:750;letter-spacing:-.02em;margin-top:6px;font-variant-numeric:tabular-nums}
+.kpi .val.ok{color:var(--good-text)} .kpi .val.bad{color:var(--critical-text)}
+.kpi .val small{font-size:19px;font-weight:650;color:var(--text2)}
+.kpi .foot{font-size:13px;color:var(--text2);margin-top:2px}
 .status{display:inline-flex;align-items:center;gap:4px;font-weight:600}
 .status.ok{color:var(--good-text)} .status.bad{color:var(--critical-text)}
 .grid2{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:16px;margin-bottom:16px}
@@ -74,13 +81,16 @@ footer{margin-top:28px;padding-top:14px;border-top:1px solid var(--border);color
 .lrow{display:grid;grid-template-columns:44px 1fr 92px 66px;align-items:center;gap:10px;padding:6px 0;cursor:pointer;border-radius:6px}
 .lrow:hover .ltrack{background:var(--grid)}
 .lrow.dim{opacity:.35}
-.lname{font-weight:600;font-size:13px}
+.lname{font-weight:700;font-size:13.5px;white-space:nowrap}
 .ltrack{position:relative;height:22px;border-radius:4px;transition:background .15s}
-.lbar{position:absolute;left:0;top:3px;bottom:3px;background:var(--series);border-radius:0 4px 4px 0}
+.lbar{position:absolute;left:0;top:3px;bottom:3px;background:var(--critical);border-radius:0 4px 4px 0}
+.lbar.ok{background:var(--good)}
 .lmeta{position:absolute;top:-3px;bottom:-3px;width:0;border-left:2px dashed var(--text2)}
-.lval{font-size:12px;color:var(--text2);text-align:right;font-variant-numeric:tabular-nums}
-.lval b{color:var(--text);font-size:13px}
-.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--text2);margin-top:10px}
+.lval{font-size:13px;color:var(--text2);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.lval b{font-size:14px;font-weight:750}
+.lval b.ok{color:var(--good-text)} .lval b.bad{color:var(--critical-text)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--text2);margin-top:10px}
+.legend.top{margin:6px 0 2px}
 .legend i{display:inline-block;vertical-align:middle;margin-right:6px}
 .sw{width:12px;height:12px;border-radius:3px}
 .dash{width:16px;height:0;border-top:2px dashed var(--text2)}
@@ -98,34 +108,44 @@ footer{margin-top:28px;padding-top:14px;border-top:1px solid var(--border);color
 .rrow{display:grid;grid-template-columns:minmax(150px,260px) 54px 1fr 36px 44px;align-items:center;gap:10px;padding:4px 6px;border-radius:6px;cursor:default}
 .rrow:hover{background:var(--grid)}
 .rname{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px}
-.rname small{color:var(--muted);margin-left:6px;font-size:11px}
+.rname small{color:var(--muted);margin-left:6px;font-size:12px}
 .mk{display:inline-block;width:16px;margin-right:4px;font-weight:700;text-align:center}
 .mk.ok{color:var(--good-text)} .mk.bad{color:var(--critical-text)}
-.rline{font-size:11px;color:var(--text2);font-weight:600;background:var(--chip);border-radius:4px;padding:2px 6px;text-align:center}
+.rline{font-size:12px;color:var(--text);font-weight:700;background:var(--chip);border-radius:4px;padding:2px 6px;text-align:center}
 .rtrack{position:relative;height:16px}
-.rbar{position:absolute;left:0;top:2px;bottom:2px;border-radius:0 4px 4px 0;background:var(--neutral)}
-.rbar.hi{background:var(--series)}
+.rbar{position:absolute;left:0;top:2px;bottom:2px;border-radius:0 4px 4px 0;background:var(--critical)}
+.rbar.hi{background:var(--good)}
 .rref{position:absolute;top:-4px;bottom:-4px;border-left:2px dashed var(--text2);opacity:.7}
-.rval{text-align:right;font-variant-numeric:tabular-nums;font-weight:600;font-size:13px}
-.zero .rval{color:var(--muted);font-weight:400}
+.rval{text-align:right;font-variant-numeric:tabular-nums;font-weight:750;font-size:14px}
+.zero .rval{color:var(--critical-text)}
 .empty{color:var(--muted);padding:16px 0}
 /* tooltip */
-.tip{position:fixed;pointer-events:none;z-index:10;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:12px;box-shadow:0 6px 24px rgba(0,0,0,.18);min-width:190px;opacity:0;transition:opacity .08s}
+.tip{position:fixed;pointer-events:none;z-index:10;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:12px;box-shadow:0 6px 24px rgba(0,0,0,.18);min-width:220px;max-width:340px;opacity:0;transition:opacity .08s}
 .tip.on{opacity:1}
 .tip .t{font-weight:650;font-size:13px;margin-bottom:2px}
-.tip .s{color:var(--muted);margin-bottom:6px}
+.tip .s{color:var(--text2);margin-bottom:6px}
 .tip table{border-collapse:collapse;width:100%}
 .tip td{padding:1px 0}
 .tip td:last-child{text-align:right;font-variant-numeric:tabular-nums;padding-left:14px}
 .tip .tot td{border-top:1px solid var(--border);font-weight:650;padding-top:4px}
 /* table */
 details.card summary{cursor:pointer;font-weight:600;font-size:15px}
-.tbl-wrap{overflow-x:auto;margin-top:12px}
+.tw{position:relative;margin-top:12px}
+.tbl-wrap{overflow-x:auto}
+.tw::after{content:'›';position:absolute;top:0;right:0;bottom:0;width:44px;display:flex;align-items:flex-start;padding-top:6px;justify-content:flex-end;padding-right:6px;font-size:26px;font-weight:700;color:var(--text);background:linear-gradient(to right,transparent,var(--surface) 75%);pointer-events:none;opacity:0;transition:opacity .15s}
+.tw.more::after{opacity:1}
+table.data th:first-child,table.data td:first-child{position:sticky;left:0;background:var(--surface);z-index:1;box-shadow:1px 0 0 var(--border)}
 table.data{width:100%;border-collapse:collapse;font-size:13px}
-table.data th{text-align:left;color:var(--text2);font-weight:600;font-size:12px;border-bottom:1px solid var(--border);padding:8px;white-space:nowrap;cursor:pointer;user-select:none}
+table.data th{text-align:left;color:var(--text2);font-weight:700;font-size:12.5px;border-bottom:1px solid var(--border);padding:8px;white-space:nowrap;cursor:pointer;user-select:none}
 table.data td{border-bottom:1px solid var(--grid);padding:7px 8px;vertical-align:top}
 table.data td.num{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
-table.data td.det{color:var(--text2);font-size:12px}
+table.data td.det{color:var(--text2);font-size:13px}
+table.data td.nw{white-space:nowrap}
+.ni{color:var(--critical-text);font-weight:700}
+.sg{color:var(--critical-text);font-weight:700;font-size:12.5px}
+.st{display:inline-flex;align-items:center;gap:4px;font-weight:700;font-size:12.5px;border-radius:6px;padding:2px 8px;white-space:nowrap}
+.st.ok{background:var(--good-bg);color:var(--good-text)} .st.bad{background:var(--crit-bg);color:var(--critical-text)}
+th .ar{font-size:11px;margin-left:3px}
 .note{margin-top:16px;font-size:12px;color:var(--text2);line-height:1.6}
 .note b{color:var(--text)}
 @media (max-width:880px){
@@ -138,13 +158,12 @@ table.data td.det{color:var(--text2);font-size:12px}
 @media (hover:none){ .rrow,.lrow,.dcol{-webkit-tap-highlight-color:transparent} }
 @media (max-width:520px){
   .rname small{display:none}
-  .chips{flex-wrap:nowrap;overflow-x:auto;width:100%;padding-bottom:4px;scrollbar-width:none}
-  .chips::-webkit-scrollbar{display:none}
-  .chip{flex:none}
+  .chip{padding:7px 11px}
   .seg{width:100%} .seg button{flex:1;padding:8px 6px}
-  .lrow{grid-template-columns:40px 1fr 84px 56px;gap:8px}
+  .lrow{grid-template-columns:50px 1fr 104px 62px;gap:6px}
   .tip{left:12px!important;right:12px;min-width:0}
-  .rrow{grid-template-columns:minmax(0,1fr) 46px 32px 40px}
+  .rrow{grid-template-columns:minmax(0,1fr) 46px 32px 44px}
+  .rname{white-space:normal;line-height:1.3}
   .rtrack{display:none}
   .kpi .val{font-size:26px}
 }
@@ -152,10 +171,10 @@ table.data td.det{color:var(--text2);font-size:12px}
 <div class="wrap">
   <header>
     <div>
-      <h1>Indicador % Técnicos ≥ 10 ordens</h1>
-      <p class="sub">Outubro/2026 · Atualizado em 27/10/26</p>
+      <h1>Técnicos ≥ 10 ordens</h1>
+      <p class="sub">Outubro/2026 · Atualizado em <span id="upd">27/10/26</span><span id="stale"></span></p>
     </div>
-    <button class="theme-btn" id="themeBtn" type="button">Alternar tema</button>
+    <button class="theme-btn" id="themeBtn" type="button" title="Alternar tema">◐ Tema</button>
   </header>
 
   <div class="filters">
@@ -169,45 +188,34 @@ table.data td.det{color:var(--text2);font-size:12px}
   <section class="grid2" style="align-items:start">
     <div class="card">
       <h2>% de técnicos com ≥ 10 ordens por linha</h2>
-      <p class="hint">Toque numa linha para filtrar o painel. Meta ≥ 70%.</p>
-      <div id="lines"></div>
-      <div class="legend"><span><i class="sw" style="background:var(--series)"></i>% técnicos ≥ 10 ordens</span><span><i class="dash"></i>Meta 70%</span></div>
+      <div class="legend top"><span><i class="sw" style="background:var(--good)"></i>Na meta</span><span><i class="sw" style="background:var(--critical)"></i>Abaixo da meta</span><span><i class="dash"></i>Meta 70%</span></div>
+      <div id="lines" style="margin-top:10px"></div>
     </div>
 
   <div class="card">
     <div class="rank-head">
       <div>
         <h2>Ranking de ordens abertas por técnico</h2>
-        <p class="hint" style="margin:0">Linha do técnico conforme o QLP. Toque ou passe o mouse para ver onde as ordens foram abertas.</p>
+        <div class="legend top"><span><i class="sw" style="background:var(--good)"></i>≥ 10 ordens</span><span><i class="sw" style="background:var(--critical)"></i>&lt; 10 ordens</span><span><i class="dash"></i>Corte de 10</span><span class="trlegend"><span class="tr up"><span class="ic">▲</span>subiu</span><span class="tr down"><span class="ic">▼</span>caiu</span><span class="tr eq"><span class="ic"></span>manteve</span></span></div>
       </div>
       <input class="search" id="search" type="search" placeholder="Buscar técnico ou ID…" aria-label="Buscar técnico">
     </div>
     <div class="rank" id="rank"></div>
-    <div class="legend"><span><i class="sw" style="background:var(--series)"></i>≥ 10 ordens</span><span><i class="sw" style="background:var(--neutral)"></i>&lt; 10 ordens</span><span><i class="dash"></i>Corte de 10 ordens</span><span class="trlegend"><span class="tr up"><span class="ic">▲</span>subiu</span><span class="tr down"><span class="ic">▼</span>caiu</span><span class="tr eq"><span class="ic"></span>manteve</span></span></div>
   </div>
   </section>
 
   <details class="card" style="margin-top:16px">
     <summary>Tabela completa (<span id="tblCount"></span> técnicos)</summary>
-    <div class="tbl-wrap">
+    <div class="tw"><div class="tbl-wrap">
       <table class="data">
         <thead><tr>
           <th data-k="nome">Técnico</th><th data-k="id">ID</th><th data-k="linha">Linha</th><th data-k="gestor">Gestor</th><th data-k="total" style="text-align:right">Ordens</th><th>Var.</th><th>≥ 10</th><th>Onde abriu as ordens</th>
         </tr></thead>
         <tbody id="tbody"></tbody>
       </table>
-    </div>
+    </div></div>
   </details>
 
-  <p class="note">
-    <b>Regra do indicador:</b> entram os técnicos (SHAPE = TEC) do QLP de cada linha. Cada técnico conta todas as ordens que abriu no mês como Usuário_Abertura, em qualquer subárea ou área. Ele atinge o indicador com <b>≥ 10 ordens</b>.
-    <b>L502</b> não tem técnicos no QLP nem ordens em outubro, por isso aparece zerada.
-    <b>Retornáveis</b> (L501, L502, L503, L505, L506, L521, L542) · <b>One Way</b> (L511, L512, L514, L541, L561, L562).<br>
-    <b>Números oficiais:</b> os KPIs e os percentuais por linha usam os valores do indicador no Power BI.
-    <b>Evolução:</b> ▲ verde = subiu, ▼ vermelho = caiu, traço amarelo = manteve, sempre em relação à leitura anterior. Para técnico, compara a quantidade de ordens; para linhas e grupos, o % de técnicos com ≥ 10 ordens (em pontos percentuais).
-    <b>† Diferença no ranking:</b> nas linhas L505, L511, L512, L541, L561 e L562 o BI conta 1 técnico a mais com ≥ 10 ordens do que aparece na tabela de Detalhes. Nessas linhas há técnicos com 8 ou 9 ordens no ranking; o BI provavelmente considera ordens que não aparecem na tabela de Detalhes (por exemplo, ordens já encerradas).
-  </p>
-  <footer>Fonte: Power BI Confiabilidade SAZ → Saúde do Planejamento → Detalhes (dados atualizados em 27/10/26) · nomes cruzados com a base de colaboradores (Outubro/2026).</footer>
 </div>
 <div class="tip" id="tip" role="tooltip"></div>
 
@@ -288,9 +296,9 @@ function renderKpis(){
   const ok = s.pct >= META;
   const p = prevStats(scopeLines()), po = prevOrd(scope());
   $('kpis').innerHTML = `
-    <div class="card kpi"><div class="lbl">% Técnicos ≥ 10 ordens</div><div class="val">${fmtPct(s.pct)}</div>
+    <div class="card kpi"><div class="lbl">% Técnicos ≥ 10 ordens</div><div class="val ${ok?'ok':'bad'}">${fmtPct(s.pct)}</div>
       <div class="foot"><span class="status ${ok?'ok':'bad'}">${ok?'✓ Dentro':'✕ Abaixo'}</span> da meta ≥ 70% ${p?trend(s.pct,p.pct,'pp'):''}</div></div>
-    <div class="card kpi"><div class="lbl">Técnicos ≥ 10 ordens</div><div class="val">${s.hi}<span style="font-size:18px;color:var(--muted)"> / ${s.n}</span></div>
+    <div class="card kpi"><div class="lbl">Técnicos ≥ 10 ordens</div><div class="val ${ok?'ok':'bad'}">${s.hi}<small> / ${s.n}</small></div>
       <div class="foot">faltam ${Math.max(0, Math.ceil(s.n*META/100) - s.hi)} p/ atingir a meta ${p?trend(s.hi,p.hi):''}</div></div>
     <div class="card kpi"><div class="lbl">Ordens abertas</div><div class="val">${s.ord.toLocaleString('pt-BR')}</div>
       <div class="foot">pelos técnicos ${scopeName()} ${po!==null?trend(s.ord,po):''}</div></div>
@@ -311,9 +319,10 @@ function renderLines(){
     const s = stats(byLine(l), [l]);
     const row = document.createElement('div');
     row.className = 'lrow' + (sel !== 'Todas' && sel !== l ? ' dim' : '');
-    row.innerHTML = `<div class="lname">${l}${PEND.has(l)?'<span class="pend">†</span>':''}</div>
-      <div class="ltrack"><div class="lbar" style="width:${s.pct}%"></div><div class="lmeta" style="left:${META}%"></div></div>
-      <div class="lval">${s.n ? `<b>${fmtPct(s.pct)}</b> · ${s.hi}/${s.n}` : 'sem técnicos'}</div>
+    const lok = s.pct >= META;
+    row.innerHTML = `<div class="lname">${l}${PEND.has(l)?'<span class="pend" title="O BI conta 1 técnico a mais com ≥ 10 ordens nesta linha do que o ranking mostra">†</span>':''}</div>
+      <div class="ltrack"><div class="lbar ${lok?'ok':''}" style="width:${s.pct}%"></div><div class="lmeta" style="left:${META}%"></div></div>
+      <div class="lval">${s.n ? `<b class="${lok?'ok':'bad'}">${fmtPct(s.pct)}</b> · ${s.hi}/${s.n}` : 'sem técnicos'}</div>
       <div>${s.n && PREV ? trend(s.pct, prevStats([l]).pct, 'pp') : ''}</div>`;
     if(s.n){
       row.onclick = () => { sel = sel === l ? 'Todas' : l; renderAll(); };
@@ -363,7 +372,7 @@ function renderRank(){
       <div class="rtrack"><div class="rbar ${d.total>=CUT?'hi':''}" style="width:${d.total/max*100}%"></div><div class="rref" style="left:${CUT/max*100}%"></div></div>
       <div class="rval">${d.total}</div>
       <div>${PREV ? trend(d.total, PREV.techs[d.id]) : ''}</div>`;
-    hover(r, () => tipTech(d));
+    hover(r, () => tipTech(d), r);
     el.appendChild(r);
   });
   if(rows.length > LIMIT && !q.trim()){
@@ -376,8 +385,8 @@ function renderRank(){
 
 function tipTech(d){
   const det = Object.entries(d.det);
-  return `<div class="t">${esc(d.nome)}</div><div class="s">ID ${d.id} · ${d.linha} · ${esc(d.gestor)}</div>
-    <table>${det.length ? det.map(([k,v]) => `<tr><td>${esc(k)}</td><td>${v}</td></tr>`).join('') : '<tr><td>Nenhuma ordem aberta</td><td></td></tr>'}
+  return `<div class="t">${esc(d.nome)}</div><div class="s">ID ${d.id} · ${d.linha} · ${d.gestor?esc(d.gestor):'<span class="sg">sem gestor no cadastro</span>'}</div>
+    <table>${det.length ? det.map(([k,v]) => `<tr><td${k==='NÃO INFORMADO'?' class="ni"':''}>${esc(k)}</td><td>${v}</td></tr>`).join('') : '<tr><td>Nenhuma ordem aberta</td><td></td></tr>'}
     <tr class="tot"><td>Total</td><td>${d.total}</td></tr>${PREV?`<tr><td>Leitura anterior</td><td>${PREV.techs[d.id] ?? '—'}</td></tr>`:''}</table>
     <div style="margin-top:6px" class="status ${d.total>=CUT?'ok':'bad'}">${d.total>=CUT?'✓ Atinge ≥ 10':'✕ Faltam '+(CUT-d.total)+' ordens'}</div>`;
 }
@@ -389,10 +398,11 @@ function renderTable(){
   });
   $('tblCount').textContent = rows.length;
   $('tbody').innerHTML = rows.map(d => `<tr>
-    <td>${esc(d.nome)}</td><td>${d.id}</td><td>${d.linha}</td><td>${esc(d.gestor)}</td>
-    <td class="num">${d.total}</td><td>${PREV ? trend(d.total, PREV.techs[d.id]) : ''}</td>
-    <td><span class="status ${d.total>=CUT?'ok':'bad'}">${d.total>=CUT?'✓ Sim':'✕ Não'}</span></td>
-    <td class="det">${Object.entries(d.det).map(([k,v])=>`${esc(k)}: ${v}`).join(' · ') || '—'}</td></tr>`).join('');
+    <td>${esc(d.nome)}</td><td>${d.id}</td><td>${d.linha}</td><td>${d.gestor?esc(d.gestor):'<span class="sg">sem gestor</span>'}</td>
+    <td class="num">${d.total}</td><td class="nw">${PREV ? trend(d.total, PREV.techs[d.id]) : ''}</td>
+    <td class="nw"><span class="st ${d.total>=CUT?'ok':'bad'}">${d.total>=CUT?'✓ Sim':'✕ Não'}</span></td>
+    <td class="det">${Object.entries(d.det).map(([k,v])=>k==='NÃO INFORMADO'?`<span class="ni">${esc(k)}: ${v}</span>`:`${esc(k)}: ${v}`).join(' · ') || '—'}</td></tr>`).join('');
+  document.querySelectorAll('th[data-k]').forEach(th => { th.querySelector('.ar')?.remove(); if(th.dataset.k===sortK) th.insertAdjacentHTML('beforeend', `<span class="ar">${sortDir<0?'▼':'▲'}</span>`); });
 }
 document.querySelectorAll('th[data-k]').forEach(th => th.onclick = () => {
   const k = th.dataset.k; sortDir = sortK === k ? -sortDir : (k === 'total' ? -1 : 1); sortK = k; renderTable();
@@ -401,10 +411,14 @@ document.querySelectorAll('th[data-k]').forEach(th => th.onclick = () => {
 // tooltip
 const tip = $('tip');
 const canHover = () => matchMedia('(hover:hover)').matches;
-function hover(el, html){
-  el.addEventListener('mouseenter', () => { if(!canHover()) return; tip.innerHTML = html(); tip.classList.add('on'); });
+function hover(el, html, anchor){
+  el.addEventListener('mouseenter', () => { if(!canHover()) return; tip.innerHTML = html(); tip.classList.add('on');
+    if(anchor){ const rc = anchor.getBoundingClientRect(), w = tip.offsetWidth, h = tip.offsetHeight;
+      let x = rc.right + 10; if(x + w > innerWidth - 8) x = Math.max(8, rc.left + rc.width*0.45);
+      let y = rc.bottom + 4; if(y + h > innerHeight - 8) y = Math.max(8, rc.top - h - 4);
+      tip.style.left = x + 'px'; tip.style.top = y + 'px'; } });
   el.addEventListener('mousemove', e => {
-    if(!canHover()) return;
+    if(!canHover() || anchor) return;
     const w = tip.offsetWidth, h = tip.offsetHeight;
     let x = e.clientX + 14, y = e.clientY + 14;
     if(x + w > innerWidth - 8) x = e.clientX - w - 14;
@@ -427,8 +441,16 @@ addEventListener('scroll', () => { if(!matchMedia('(hover:hover)').matches) tip.
 $('search').addEventListener('input', e => { q = e.target.value; renderRank(); renderTable(); });
 
 function renderCmp(){ $('cmp').innerHTML = PREV ? `Evolução: <b>${CUR.d}</b> comparado a <b>${PREV.d}</b> · ordens no BI até ${CUR.ate}` : `Primeira leitura (${CUR.d}) · a evolução aparece a partir da próxima atualização`; }
-function renderAll(){ renderCmp(); renderFilters(); renderKpis(); renderLines(); renderRank(); renderTable(); }
+function renderStale(){
+  const [dd,mm] = CUR.d.split('/').map(Number), up = new Date(2026, mm-1, dd), now = new Date();
+  const days = Math.floor((new Date(now.getFullYear(),now.getMonth(),now.getDate()) - up) / 864e5);
+  $('stale').innerHTML = days > 2 ? `<span class="stale">dados de ${days} dias atrás</span>` : '';
+}
+function renderAll(){ renderStale(); renderCmp(); renderFilters(); renderKpis(); renderLines(); renderRank(); renderTable(); }
 renderAll();
+function updMore(){ document.querySelectorAll('.tw').forEach(w=>{const t=w.querySelector('.tbl-wrap'); w.classList.toggle('more', t.scrollWidth - t.clientWidth - t.scrollLeft > 4);}); }
+document.querySelector('.tbl-wrap').addEventListener('scroll',updMore,{passive:true});
+addEventListener('resize',updMore); document.querySelector('details.card').addEventListener('toggle',updMore);
 </script>
 
 </body></html>
